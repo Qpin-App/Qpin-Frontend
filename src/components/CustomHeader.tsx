@@ -24,7 +24,7 @@ const CustomHeader = ({ title }: { title: string }) => {
 
 const styles = StyleSheet.create({
     header: {
-        height: 100,
+        height: 80,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
