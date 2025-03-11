@@ -1,10 +1,31 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
+import LinearGradient from "react-native-linear-gradient";
+import HomeInfo from "./HomeInfo";
+import WeeklyCalendar from "./WeeklyCalendar";
 
 const HomeScreen = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Welcome to HomeScreen!</Text>
+      <LinearGradient
+        colors={[
+          "rgba(126, 255, 222, 0.2)",
+          "rgba(56, 183, 255, 0)",
+          "rgba(255, 255, 255, 1)",
+        ]}
+        locations={[0, 0.3, 1]}
+        start={{ x: 1, y: 0 }}
+        end={{ x: 0, y: 1 }}
+        style={styles.gradient}
+      />
+      <View style={styles.content}>
+        <HomeInfo />
+        <WeeklyCalendar />
+
+        <View style={styles.calendar}>
+        </View>
+      </View>
+
     </View>
   );
 };
@@ -14,13 +35,31 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#f0f0f0",
+    backgroundColor: "white",
   },
-  text: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#333",
+  gradient: {
+    position: "absolute",
+    top: 0,
+    width: "100%",
+    height: "100%",
   },
+  content: {
+    width: "100%",
+    height: "100%",
+    padding: 20,
+  },
+  calendar: {
+    width: "100%",
+    backgroundColor: "white",
+    padding: 20,
+    borderRadius: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 10,
+  },
+
 });
 
 export default HomeScreen;
