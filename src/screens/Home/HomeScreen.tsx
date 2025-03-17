@@ -21,9 +21,6 @@ const HomeScreen = () => {
       <View style={styles.content}>
         <HomeInfo />
         <WeeklyCalendar />
-
-        <View style={styles.calendar}>
-        </View>
       </View>
 
     </View>
