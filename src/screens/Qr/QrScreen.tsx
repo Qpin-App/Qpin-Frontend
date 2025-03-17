@@ -1,10 +1,10 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 
-const HomeScreen = () => {
+const QrScreen = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Welcome to HomeScreen</Text>
+      <Text style={styles.text}>Welcome to QrScreen!</Text>
     </View>
   );
 };
@@ -23,4 +23,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HomeScreen;
+export default QrScreen;
