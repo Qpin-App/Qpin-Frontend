@@ -28,6 +28,12 @@ const WeeklyCalendar = () => {
         <Text style={styles.headerText}>
           {currentWeek[0].format("YYYY년 MM월")}
         </Text>
+        <TouchableOpacity>
+          <Image
+            source={require('../../assets/icons/calendar_picker_arrow.png')}
+            style={styles.datePickerArrow}
+          />
+        </TouchableOpacity>
       </View>
 
       <View style={styles.calendar}>
@@ -73,7 +79,7 @@ const styles = StyleSheet.create({
     height: 140,
     flexDirection: "column",
     backgroundColor: "white",
-    padding: 20,
+    padding: 15,
     borderRadius: 10,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 5 },
@@ -90,6 +96,12 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "bold",
     marginHorizontal: 10
+  },
+  datePickerArrow: {
+    width: 18,
+    height: 18,
+    position: "relative",
+    top: 4,
   },
   calendar: {
     height: 80,
