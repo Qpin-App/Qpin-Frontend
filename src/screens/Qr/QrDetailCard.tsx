@@ -1,15 +1,21 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList, Dimensions } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
+import LinearGradient from "react-native-linear-gradient";
 
 // 카드 width, height를 항상 동일하게 주기 위해서 -> 정사각형
 const screenWidth = Dimensions.get("window").width;
 const rem = screenWidth / 24;
 const cardSize = screenWidth - rem * 5;
 
-const QrDetailCard = ({ backgroundColor }: { backgroundColor: string }) => {
+const QrDetailCard = ({ backgroundColor, gradientColor }: { backgroundColor: string, gradientColor: string }) => {
   return (
-    <View style={[styles.card, { backgroundColor }]}>
+    <LinearGradient
+      colors={[backgroundColor, gradientColor]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+      style={styles.card}
+    >
       <View style={styles.row}>
         <View style={styles.inputContainer}>
           <View style={styles.qrBox} />
@@ -25,7 +31,7 @@ const QrDetailCard = ({ backgroundColor }: { backgroundColor: string }) => {
           </View>
         </View>
       </View>
-    </View>
+    </LinearGradient>
   )
 };
 
