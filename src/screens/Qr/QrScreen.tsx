@@ -40,6 +40,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    width: "100%",
     backgroundColor: "white",
   },
   header: {
@@ -60,10 +61,12 @@ const styles = StyleSheet.create({
   },
   qrList: {
     width: "100%",
-    height: "90%",
+    height: "100%",
   },
   columnWrapper: {
+    width: "100%",
     gap: 15,
+    paddingHorizontal: 20,
     justifyContent: "space-between",
   },
 });
