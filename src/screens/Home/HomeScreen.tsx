@@ -26,7 +26,7 @@ const HomeScreen = () => {
         start={{ x: 1, y: 0 }}
         end={{ x: 0, y: 1 }}
         style={styles.gradient}
-      />k
+      />
       <View style={styles.content}>
         <View style={styles.nonScrollContent}>
           <HomeInfo />

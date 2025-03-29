@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, FlatList, Dimensions, TouchableWithoutFeedback } from "react-native";
 import CustomStackHeader from "../../components/CustomStackHeader";
-import QrDetailCard from "./QrDetailCard";
+import QrCardDetail from "./QrCardDetail";
 import BackColorSelector from "./BackColorSelector";
 import BackStickerSelector from "./BackStickerSelector";
 import Icon from "react-native-vector-icons/Ionicons";
@@ -11,6 +11,7 @@ const QrScreenAdd = () => {
   const [selectedColor, setSelectedColor] = useState("#F8F8F8");
   const [selectedGradientColor, setSelectedGradientColor] = useState("#F8F8F8");
   const [selectedSticker, setSelectedSticker] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   const handleSave = () => {
     console.log("Save button clicked");
@@ -19,10 +20,11 @@ const QrScreenAdd = () => {
   return (
     <View style={styles.container}>
       <CustomStackHeader title="생성하기" onClick={handleSave} isSave={true} />
-      <QrDetailCard
+      <QrCardDetail
         backgroundColor={selectedColor}
         gradientColor={selectedGradientColor}
         sticker={selectedSticker}
+        imageUri={selectedImage}
       />
       <View style={styles.stylingContainer}>
         <View style={styles.styleTab}>
@@ -55,6 +57,7 @@ const QrScreenAdd = () => {
         {activeTab == "스티커" &&
           <BackStickerSelector
             onSelectSticker={(sticker) => setSelectedSticker(sticker)}
+            onSelectImage={(image) => setSelectedImage(image)}
           />
         }
       </View>

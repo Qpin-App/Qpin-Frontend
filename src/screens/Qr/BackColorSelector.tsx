@@ -108,12 +108,13 @@ const styles = StyleSheet.create({
   },
   gradientContainer: {
     width: "100%",
+    height: 80,
     padding: 20,
     gap: 15,
   },
   gradientHeader: {
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "flex-end",
     gap: 5
   },
   gradientTitle: {

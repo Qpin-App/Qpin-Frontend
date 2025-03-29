@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, FlatList, StyleSheet, TouchableOpacity } from "react-native";
-import QrSimpleCard from "./QrSimpleCard";
+import QrCardSimple from "./QrCardSimple";
 import { QrData } from "../models/qr";
 
 const qrMockData: QrData[] = [
@@ -14,7 +14,7 @@ const qrMockData: QrData[] = [
 
 const QrScreen = () => {
   const renderItem = ({ item }: { item: QrData }) => {
-    return <QrSimpleCard key={item.id} data={item} />;
+    return <QrCardSimple key={item.id} data={item} />;
   }
 
   return (
