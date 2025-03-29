@@ -1,7 +1,10 @@
 export interface QrData {
   id: string | number;
-  code: string;
-  number: string;
-  comment: string;
-  image?: string;
+  backgroundColor: string | null,
+  gradientColor: string | null,
+  sticker: string | null,
+  imageUri: string | null,
+  phoneNumber: string | null,
+  comment: string | null,
+  isEdit?: boolean,
 }

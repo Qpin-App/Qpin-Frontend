@@ -6,7 +6,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import HomeScreen from "./src/screens/Home/HomeScreen";
 import QrScreen from "./src/screens/Qr/QrScreen";
 import QrScreenDetail from "./src/screens/Qr/QrScreenDetail";
-import QrScreenAdd from "./src/screens/Qr/QrScreenAdd";
+import QrScreenEditor from "./src/screens/Qr/QrScreenEditor";
 import ParkingScreen from "./src/screens/Parking/ParkingScreen";
 import SearchScreen from "./src/screens/Search/SearchScreen";
 import InsuranceScreen from "./src/screens/Insurance/InsuranceScreen";
@@ -40,8 +40,8 @@ const QrStack = () => (
       options={{ headerShown: false }}
     />
     <Stack.Screen
-      name="QrScreenAdd"
-      component={QrScreenAdd}
+      name="QrScreenEditor"
+      component={QrScreenEditor}
       options={{ headerShown: false }}
     />
     <Stack.Screen

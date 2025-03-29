@@ -22,13 +22,16 @@ type QrDetailCardProps = {
   gradientColor: string;
   sticker: string | null;
   imageUri: string | null;
+  phoneNumber: string | null;
+  comment: string | null;
+  isEdit: boolean;
 };
 
-const QrDetailCard = ({ backgroundColor, gradientColor, sticker, imageUri }: QrDetailCardProps) => {
+const QrDetailCard = ({ backgroundColor, gradientColor, sticker, imageUri, phoneNumber, comment, isEdit }: QrDetailCardProps) => {
   const [stickerImage, setStickerImage] = useState<string | null>(null);
   const [pictureImage, setPictureImage] = useState<string | null>(null);
-  const [phoneNumberInput, setPhoneNumberInput] = useState<string | null>(null);
-  const [tempPhoneNumber, setTempPhoneNumber] = useState<string>("");
+  const [phoneNumberInput, setPhoneNumberInput] = useState<string | null>(phoneNumber);
+  const [tempPhoneNumber, setTempPhoneNumber] = useState<string | null>(phoneNumber);
 
   useEffect(() => {
     if (sticker) {
@@ -40,7 +43,6 @@ const QrDetailCard = ({ backgroundColor, gradientColor, sticker, imageUri }: QrD
     if (imageUri) {
       setPictureImage(imageUri);
     }
-    console.log(imageUri);
   }, [imageUri]);
 
   const handlePhoneNumberChange = () => {
@@ -61,6 +63,8 @@ const QrDetailCard = ({ backgroundColor, gradientColor, sticker, imageUri }: QrD
             tempPhoneNumber={tempPhoneNumber}
             setTempPhoneNumber={setTempPhoneNumber}
             handlePhoneNumberChange={handlePhoneNumberChange}
+            comment={comment}
+            isEdit={isEdit}
           />
         </ImageBackground>
       ) : (
@@ -76,6 +80,8 @@ const QrDetailCard = ({ backgroundColor, gradientColor, sticker, imageUri }: QrD
             tempPhoneNumber={tempPhoneNumber}
             setTempPhoneNumber={setTempPhoneNumber}
             handlePhoneNumberChange={handlePhoneNumberChange}
+            comment={comment}
+            isEdit={isEdit}
           />
         </LinearGradient>
       )}

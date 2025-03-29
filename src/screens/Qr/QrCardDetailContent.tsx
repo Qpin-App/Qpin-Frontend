@@ -9,6 +9,8 @@ type QrDetailCardContentProps = {
   tempPhoneNumber: string;
   setTempPhoneNumber: (value: string) => void;
   handlePhoneNumberChange: () => void;
+  comment: string | null;
+  isEdit: boolean;
 }
 
 const screenWidth = Dimensions.get("window").width;
@@ -20,7 +22,9 @@ const QrDetailCardContent = ({
   phoneNumberInput,
   tempPhoneNumber,
   setTempPhoneNumber,
-  handlePhoneNumberChange
+  handlePhoneNumberChange,
+  comment,
+  isEdit
 }: QrDetailCardContentProps) => {
   return (
     <View style={styles.row}>
@@ -45,11 +49,17 @@ const QrDetailCardContent = ({
               value={tempPhoneNumber}
               onChangeText={setTempPhoneNumber}
               onEndEditing={handlePhoneNumberChange}
+              editable={isEdit}
             />
           </View>
           <View style={styles.inputRow}>
             <Icon name="pencil-outline" size={18} color="#B9B9B9" />
-            <TextInput style={styles.input} placeholder="주차 메모 작성하기" />
+            <TextInput
+              style={styles.input}
+              value={comment}
+              placeholder="주차 메모 작성하기"
+              editable={isEdit}
+            />
           </View>
         </View>
       </View>

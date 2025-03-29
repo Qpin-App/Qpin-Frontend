@@ -1,17 +1,21 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, FlatList, Dimensions, TouchableWithoutFeedback } from "react-native";
+import { useRoute } from '@react-navigation/native';
 import CustomStackHeader from "../../components/CustomStackHeader";
 import QrCardDetail from "./QrCardDetail";
 import BackColorSelector from "./BackColorSelector";
 import BackStickerSelector from "./BackStickerSelector";
 import Icon from "react-native-vector-icons/Ionicons";
 
-const QrScreenAdd = () => {
-  const [activeTab, setActiveTab] = useState("배경색");
-  const [selectedColor, setSelectedColor] = useState("#F8F8F8");
-  const [selectedGradientColor, setSelectedGradientColor] = useState("#F8F8F8");
-  const [selectedSticker, setSelectedSticker] = useState(null);
-  const [selectedImage, setSelectedImage] = useState(null);
+const QrScreenEditor = () => {
+  const route = useRoute();
+  const { backgroundColor, gradientColor, sticker, imageUri, phoneNumber, comment, isEdit } = route.params;
+
+  const [activeTab, setActiveTab] = useState<string>("배경색");
+  const [selectedColor, setSelectedColor] = useState<string>(backgroundColor || "#F8F8F8");
+  const [selectedGradientColor, setSelectedGradientColor] = useState<string>(gradientColor || "#F8F8F8");
+  const [selectedSticker, setSelectedSticker] = useState<string | null>(sticker || null);
+  const [selectedImage, setSelectedImage] = useState<string | null>(imageUri || null);
 
   const handleSave = () => {
     console.log("Save button clicked");
@@ -25,6 +29,9 @@ const QrScreenAdd = () => {
         gradientColor={selectedGradientColor}
         sticker={selectedSticker}
         imageUri={selectedImage}
+        phoneNumber={phoneNumber}
+        comment={comment}
+        isEdit={true}
       />
       <View style={styles.stylingContainer}>
         <View style={styles.styleTab}>
@@ -50,6 +57,7 @@ const QrScreenAdd = () => {
         </View>
         {activeTab == "배경색" &&
           <BackColorSelector
+            currentColor={selectedColor}
             onSelectColor={(color) => setSelectedColor(color)}
             onSelectGradient={(color) => setSelectedGradientColor(color)}
           />
@@ -106,4 +114,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default QrScreenAdd;
+export default QrScreenEditor;

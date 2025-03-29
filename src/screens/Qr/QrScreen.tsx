@@ -4,12 +4,38 @@ import QrCardSimple from "./QrCardSimple";
 import { QrData } from "../models/qr";
 
 const qrMockData: QrData[] = [
-  { id: "add", code: "add", number: "", comment: "안심 QR 카드 생성" },
-  { id: 1, code: "Qr1", number: "123-456-7890", comment: "잠깐 편의점 갑니다!" },
-  { id: 2, code: "Qr2", number: "098-765-4321", comment: "10분간 자리 비웁니다" },
-  { id: 3, code: "Qr3", number: "123-987-6543", comment: "은행 다녀옵니다" },
-  { id: 4, code: "Qr4", number: "876-543-2109", comment: "1박 2일 여행 다녀옵니다" },
-  { id: 5, code: "Qr5", number: "789-012-3456", comment: "유료 주차장입니다" },
+  {
+    id: "add",
+    number: "",
+    comment: "안심 QR 카드 생성"
+  },
+  {
+    id: 1,
+    backgroundColor: "#B5E1FC",
+    gradientColor: "#9C98F8",
+    sticker: "heart",
+    imageUri: "file:///data/user/0/com.myapp/cache/rn_image_picker_lib_temp_1b34151c-dc51-4b77-98a2-b193f99cbe7f.jpg",
+    phoneNumber: "010-4820-9952",
+    comment: "잠깐 편의점 갑니다!"
+  },
+  {
+    id: 2,
+    backgroundColor: "#B5E1FC",
+    gradientColor: "#9C98F8",
+    sticker: "heart",
+    imageUri: "",
+    phoneNumber: "098-765-4321",
+    comment: "10분간 자리 비웁니다"
+  },
+  {
+    id: 3,
+    backgroundColor: "#B5E1FC",
+    gradientColor: "#9C98F8",
+    sticker: "star",
+    imageUri: "",
+    phoneNumber: "098-765-4321",
+    comment: "여행 다녀옵니다"
+  },
 ];
 
 const QrScreen = () => {

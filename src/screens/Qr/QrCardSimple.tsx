@@ -5,14 +5,15 @@ import QRCode from 'react-native-qrcode-svg';
 import { QrData } from "../models/qr";
 
 const QrSimpleCard = ({ data }: QrData ) => {
+  console.log(data);
   const navigation = useNavigation();
 
   const handlePressDetail = () => {
-    navigation.navigate("QrScreenDetail", { data });
+    navigation.navigate("QrScreenDetail", { ...data });
   };
 
   const handlePressAdd = () => {
-    navigation.navigate("QrScreenAdd", {data});
+    navigation.navigate("QrScreenEditor", { });
   }
 
   if(data.id == "add") {
@@ -35,15 +36,15 @@ const QrSimpleCard = ({ data }: QrData ) => {
       <TouchableOpacity onPress={handlePressDetail}>
         <View style={styles.container}>
           <ImageBackground
-            source={data.image ? { uri: data.image } : require('../../assets/icons/qr_example_background.png')}
+            source={data.imageUri ? { uri: data.imageUri } : require('../../assets/icons/qr_example_background.png')}
             style={styles.qrContainer}
             imageStyle={{ borderRadius: 5 }}
           >
             <View style={styles.qrArea}>
-              <QRCode size={45} value={data.code} />
+              <QRCode size={45} value={data.phoneNumber} />
             </View>
           </ImageBackground>
-          <Text style={styles.qrContent}>{data.number}</Text>
+          <Text style={styles.qrContent}>{data.phoneNumber}</Text>
         </View>
       </TouchableOpacity>
 

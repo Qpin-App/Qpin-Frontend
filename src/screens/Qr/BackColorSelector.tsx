@@ -14,12 +14,13 @@ const GRADIENTS: { [key: string]: string[] } = {
 };
 
 type BackColorSelectorProps = {
+  currentColor: string | null;
   onSelectColor: (color: string) => void;
   onSelectGradient: (color: string) => void;
 };
 
-const BackColorSelector = ({ onSelectColor, onSelectGradient }: BackColorSelectorProps) => {
-  const [selectedColor, setSelectedColor] = useState(INITIAL_COLOR);
+const BackColorSelector = ({ currentColor, onSelectColor, onSelectGradient }: BackColorSelectorProps) => {
+  const [selectedColor, setSelectedColor] = useState(currentColor);
   const [gradientWidth, setGradientWidth] = useState(0);
 
   const handleLayout = (e: any) => {

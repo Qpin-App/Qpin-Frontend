@@ -1,12 +1,18 @@
-import React, { useEffect } from "react";
-import { View, Text, Button, Alert, StyleSheet } from "react-native";
-import CustomStackHeader from "../../components/CustomStackHeader";
+import React, { useState, useEffect } from "react";
+import { View, Text, Button, Alert, TouchableOpacity, Dimensions, StyleSheet } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import CustomStackHeader from "../../components/CustomStackHeader";
+import QrCardDetail from "./QrCardDetail";
 
-const QrScreenDetail = ({ navigation }: any) => {
+const screenWidth = Dimensions.get("window").width;
+const rem = screenWidth / 24;
+const cardSize = screenWidth - rem * 5;
+
+const QrScreenDetail = ({navigation}: any) => {
+  const route = useRoute();
+  const { id, backgroundColor, gradientColor, sticker, imageUri, phoneNumber, comment } = route.params;
+
   const handleDelete = () => {
-    console.log("삭제 버튼 눌림");
-
     // navigation.isFocused()로 현재 화면이 포커스를 받고 있는지 확인
     if (navigation.isFocused()) {
       setTimeout(() => {
@@ -18,28 +24,102 @@ const QrScreenDetail = ({ navigation }: any) => {
     }
   };
 
-  useEffect(() => {
-    // 화면이 로드되었을 때
-    if (navigation.isFocused()) {
-      console.log("QrScreenDetail이 포커스를 받음");
-    }
-  }, [navigation]);
+  const handlePressEdit = () => {
+    navigation.navigate("QrScreenEditor", {
+     backgroundColor,
+     gradientColor,
+     sticker,
+     imageUri,
+     phoneNumber,
+     comment,
+    });
+  };
+
   return (
     <View style={styles.container}>
       <CustomStackHeader title="QR 안심 카드" onClick={handleDelete} />
-      <Text>QR 코드 수정 페이지</Text>
+      <View style={styles.content}>
+        <QrCardDetail
+          backgroundColor={backgroundColor}
+          gradientColor={gradientColor}
+          sticker={sticker}
+          imageUri={imageUri}
+          phoneNumber={phoneNumber}
+          comment={comment}
+          isEdit={false}
+        />
+      </View>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          style={styles.modifyButton}
+          onPress={handlePressEdit}
+        >
+          <Text style={styles.modifyText}>수정하기</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.submitButton}
+        >
+          <Text style={styles.submitText}>내보내기</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexDirection: "column",
     backgroundColor: "white",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
+    height: "100%",
   },
   title: {
     fontSize: 20,
     fontWeight: "bold",
+  },
+  content: {
+    flexDirection: "column",
+    alignItems: "center",
+  },
+  buttonContainer:{
+    width: cardSize,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingBottom: 50,
+  },
+  modifyButton: {
+    width: 120,
+    height: 40,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "#38B7FF",
+  },
+  modifyText: {
+    color: "#38B7FF",
+    fontSize: 16,
+    fontWeight: 500,
+  },
+  submitButton: {
+    width: 120,
+    height: 40,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "#38B7FF",
+    backgroundColor: "#38B7FF",
+  },
+  submitText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: 500,
   },
 });
 
