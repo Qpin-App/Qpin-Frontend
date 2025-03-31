@@ -1,7 +1,8 @@
-import React from "react";
-import { View, Text, FlatList, StyleSheet, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image } from "react-native";
 import QrCardSimple from "./QrCardSimple";
 import { QrData } from "../models/qr";
+import CommonModal from "../../components/CommonModal";
 
 const qrMockData: QrData[] = [
   {
@@ -39,15 +40,56 @@ const qrMockData: QrData[] = [
 ];
 
 const QrScreen = () => {
-  const renderItem = ({ item }: { item: QrData }) => {
-    return <QrCardSimple key={item.id} data={item} />;
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [isSelectionMode, setIsSelectionMode] = useState<boolean>(false);
+  const [selectedItems, setSelectedItems] = useState<string[]>([]);
+
+  const toggleSelectionMode = () => {
+    setIsSelectionMode(!isSelectionMode);
+    if (isSelectionMode) setSelectedItems([]);
+  };
+
+  const handleSelectItem = (id: string) => {
+    setSelectedItems((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+    );
+  };
+
+  const handleDeleteQr = () => {
+    setModalVisible(false);
+    setIsSelectionMode(false);
+    setSelectedItems([]);
   }
+
+  const renderItem = ({ item }: { item: QrData }) => (
+    <QrCardSimple
+      key={item.id}
+      data={item}
+      isSelectable={isSelectionMode}
+      isSelected={selectedItems.includes(item.id)}
+      onSelect={handleSelectItem}
+    />
+  );
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>QR 안심 카드</Text>
-        <Text style={styles.selectButton}>선택</Text>
+        <View style={styles.headerButtonSet}>
+          <TouchableOpacity onPress={toggleSelectionMode}>
+            <Text style={styles.selectButton}>
+              {isSelectionMode ? "취소" : "선택"}
+            </Text>
+          </TouchableOpacity>
+          {isSelectionMode &&
+            <TouchableOpacity onPress={() => setModalVisible(true)}>
+              <Image
+                source={require("../../assets/icons/trash_btn.png")}
+                style={styles.trashButton}
+              />
+            </TouchableOpacity>
+          }
+        </View>
       </View>
       <FlatList
         data={qrMockData}
@@ -57,6 +99,13 @@ const QrScreen = () => {
         contentContainerStyle={styles.qrList}
         columnWrapperStyle={styles.columnWrapper}
       />
+      {modalVisible &&
+        <CommonModal
+          content={"QR 카드를 삭제하시겠습니까?"}
+          onClose={() => setModalVisible(false)}
+          onSubmit={handleDeleteQr}
+        />
+      }
     </View>
   );
 };
@@ -81,6 +130,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
   },
+  headerButtonSet: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 20,
+  },
   selectButton: {
     fontSize: 12,
     color: "#999999",
@@ -94,6 +148,10 @@ const styles = StyleSheet.create({
     gap: 15,
     paddingHorizontal: 20,
     justifyContent: "space-between",
+  },
+  trashButton: {
+    width: 13,
+    height: 15
   },
 });
 

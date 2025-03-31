@@ -7,6 +7,7 @@ import HomeScreen from "./src/screens/Home/HomeScreen";
 import QrScreen from "./src/screens/Qr/QrScreen";
 import QrScreenDetail from "./src/screens/Qr/QrScreenDetail";
 import QrScreenEditor from "./src/screens/Qr/QrScreenEditor";
+import CompleteScreen from "./src/screens/Qr/CompleteScreen";
 import ParkingScreen from "./src/screens/Parking/ParkingScreen";
 import SearchScreen from "./src/screens/Search/SearchScreen";
 import InsuranceScreen from "./src/screens/Insurance/InsuranceScreen";
@@ -40,6 +41,11 @@ const QrStack = () => (
       options={{ headerShown: false }}
     />
     <Stack.Screen
+      name="QrScreen"
+      component={QrScreen}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
       name="QrScreenEditor"
       component={QrScreenEditor}
       options={{ headerShown: false }}
@@ -47,6 +53,11 @@ const QrStack = () => (
     <Stack.Screen
       name="QrScreenDetail"
       component={QrScreenDetail}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="CompleteScreen"
+      component={CompleteScreen}
       options={{ headerShown: false }}
     />
   </Stack.Navigator>

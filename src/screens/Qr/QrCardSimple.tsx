@@ -2,18 +2,32 @@ import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image, ImageBackground } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import QRCode from 'react-native-qrcode-svg';
+import Icon from "react-native-vector-icons/FontAwesome"; // 변경된 부분
 import { QrData } from "../models/qr";
 
-const QrSimpleCard = ({ data }: QrData ) => {
-  console.log(data);
+const QrSimpleCard = ({
+  data,
+  isSelectable = false,
+  isSelected = false,
+  onSelect,
+}: {
+  data: QrData;
+  isSelectable?: boolean;
+  isSelected?: boolean;
+  onSelect?: (id: string) => void;
+}) => {
   const navigation = useNavigation();
 
   const handlePressDetail = () => {
-    navigation.navigate("QrScreenDetail", { ...data });
+    if (isSelectable && onSelect) {
+      onSelect(data.id);
+    } else {
+      navigation.navigate("QrScreenDetail", { ...data });
+    }
   };
 
   const handlePressAdd = () => {
-    navigation.navigate("QrScreenEditor", { });
+    navigation.navigate("QrScreenEditor", {});
   }
 
   if(data.id == "add") {
@@ -36,10 +50,26 @@ const QrSimpleCard = ({ data }: QrData ) => {
       <TouchableOpacity onPress={handlePressDetail}>
         <View style={styles.container}>
           <ImageBackground
-            source={data.imageUri ? { uri: data.imageUri } : require('../../assets/icons/qr_example_background.png')}
+            source={
+              data.imageUri
+                ? { uri: data.imageUri }
+                : require("../../assets/icons/qr_example_background.png")
+            }
             style={styles.qrContainer}
             imageStyle={{ borderRadius: 5 }}
           >
+            {isSelectable && (
+              <TouchableOpacity
+                style={styles.checkboxContainer}
+                onPress={() => onSelect && onSelect(data.id)}
+              >
+                <Icon
+                 name={isSelected ? "check-circle" : "circle-o"}
+                 size={15}
+                 color={isSelected ? "#38B7FF" : "#aaa"}
+                />
+              </TouchableOpacity>
+            )}
             <View style={styles.qrArea}>
               <QRCode size={45} value={data.phoneNumber} />
             </View>
@@ -47,7 +77,6 @@ const QrSimpleCard = ({ data }: QrData ) => {
           <Text style={styles.qrContent}>{data.phoneNumber}</Text>
         </View>
       </TouchableOpacity>
-
     );
   }
 };
@@ -95,6 +124,18 @@ const styles = StyleSheet.create({
     marginTop: 5,
     fontSize: 11,
   },
+  checkboxContainer: {
+    position: "absolute",
+    top: 5,
+    right: 5,
+    width: 15,
+    height: 15,
+    backgroundColor: "white",
+    borderRadius: 10,
+    borderWidth: 0,
+    justifyContent: "center",
+    alignItems: "center",
+  }
 });
 
 export default QrSimpleCard;

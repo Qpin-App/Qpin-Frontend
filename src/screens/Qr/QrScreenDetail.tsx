@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Button, Alert, TouchableOpacity, Dimensions, StyleSheet } from "react-native";
+import { View, Text, Button, TouchableOpacity, Dimensions, StyleSheet } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import CustomStackHeader from "../../components/CustomStackHeader";
+import CommonModal from "../../components/CommonModal";
 import QrCardDetail from "./QrCardDetail";
 
 const screenWidth = Dimensions.get("window").width;
@@ -9,20 +10,14 @@ const rem = screenWidth / 24;
 const cardSize = screenWidth - rem * 5;
 
 const QrScreenDetail = ({navigation}: any) => {
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
   const route = useRoute();
   const { id, backgroundColor, gradientColor, sticker, imageUri, phoneNumber, comment } = route.params;
 
-  const handleDelete = () => {
-    // navigation.isFocused()로 현재 화면이 포커스를 받고 있는지 확인
-    if (navigation.isFocused()) {
-      setTimeout(() => {
-        Alert.alert("삭제 확인", "이 QR을 삭제할까요?", [
-          { text: "취소", style: "cancel" },
-          { text: "삭제", onPress: () => console.log("QR 삭제됨") },
-        ]);
-      }, 0);
-    }
-  };
+  const handleDeleteQr = () => {
+    setModalVisible(false);
+    navigation.navigate("QrScreen", {});
+  }
 
   const handlePressEdit = () => {
     navigation.navigate("QrScreenEditor", {
@@ -37,7 +32,7 @@ const QrScreenDetail = ({navigation}: any) => {
 
   return (
     <View style={styles.container}>
-      <CustomStackHeader title="QR 안심 카드" onClick={handleDelete} />
+      <CustomStackHeader title="QR 안심 카드" onClick={() => setModalVisible(true)} />
       <View style={styles.content}>
         <QrCardDetail
           backgroundColor={backgroundColor}
@@ -62,6 +57,13 @@ const QrScreenDetail = ({navigation}: any) => {
           <Text style={styles.submitText}>내보내기</Text>
         </TouchableOpacity>
       </View>
+      {modalVisible &&
+        <CommonModal
+          content={"QR 카드를 삭제하시겠습니까?"}
+          onClose={() => setModalVisible(false)}
+          onSubmit={handleDeleteQr}
+        />
+      }
     </View>
   );
 };

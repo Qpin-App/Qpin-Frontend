@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, FlatList, Dimensions, TouchableWithoutFeedback } from "react-native";
-import { useRoute } from '@react-navigation/native';
+import { useRoute, useNavigation } from '@react-navigation/native';
 import CustomStackHeader from "../../components/CustomStackHeader";
 import QrCardDetail from "./QrCardDetail";
 import BackColorSelector from "./BackColorSelector";
@@ -8,6 +8,7 @@ import BackStickerSelector from "./BackStickerSelector";
 import Icon from "react-native-vector-icons/Ionicons";
 
 const QrScreenEditor = () => {
+  const navigation = useNavigation();
   const route = useRoute();
   const { backgroundColor, gradientColor, sticker, imageUri, phoneNumber, comment, isEdit } = route.params;
 
@@ -18,7 +19,7 @@ const QrScreenEditor = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(imageUri || null);
 
   const handleSave = () => {
-    console.log("Save button clicked");
+    navigation.navigate("CompleteScreen", {});
   };
 
   return (

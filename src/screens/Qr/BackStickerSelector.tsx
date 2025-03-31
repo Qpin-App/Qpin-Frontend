@@ -86,7 +86,6 @@ const BackStickerSelector = ({ onSelectSticker, onSelectImage }) => {
         </TouchableOpacity>
       </View>
 
-      {/* 모달 */}
       <Modal
         visible={modalVisible}
         transparent
