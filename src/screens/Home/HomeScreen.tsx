@@ -1,8 +1,17 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, ScrollView, StyleSheet } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import HomeInfo from "./HomeInfo";
 import WeeklyCalendar from "./WeeklyCalendar";
+import QrCard from "./QrCard";
+
+const qrMockData = [
+  { id: 1, code: 'Qr1', number: '123-456-7890', comment: '잠깐 편의점 갑니다!' },
+  { id: 2, code: 'Qr2', number: '098-765-4321', comment: '10분간 자리 비웁니다' },
+  { id: 3, code: 'Qr3', number: '123-987-6543', comment: '은행 다녀옵니다' },
+  { id: 4, code: 'Qr4', number: '876-543-2109', comment: '1박 2일 여행 다녀옵니다' },
+  { id: 5, code: 'Qr5', number: '789-012-3456', comment: '유료 주차장입니다' },
+];
 
 const HomeScreen = () => {
   return (
@@ -17,15 +26,22 @@ const HomeScreen = () => {
         start={{ x: 1, y: 0 }}
         end={{ x: 0, y: 1 }}
         style={styles.gradient}
-      />
+      />k
       <View style={styles.content}>
-        <HomeInfo />
-        <WeeklyCalendar />
-
-        <View style={styles.calendar}>
+        <View style={styles.nonScrollContent}>
+          <HomeInfo />
+          <WeeklyCalendar />
         </View>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContainer}
+        >
+          {qrMockData.map((qr) => (
+            <QrCard key={qr.id} data={qr} />
+          ))}
+        </ScrollView>
       </View>
-
     </View>
   );
 };
@@ -46,20 +62,16 @@ const styles = StyleSheet.create({
   content: {
     width: "100%",
     height: "100%",
-    padding: 20,
   },
-  calendar: {
+  nonScrollContent: {
     width: "100%",
-    backgroundColor: "white",
     padding: 20,
-    borderRadius: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-    elevation: 10,
   },
-
+  scrollContainer: {
+    flexDirection: 'row',
+    marginHorizontal: 20,
+    gap: 10,
+  },
 });
 
 export default HomeScreen;
