@@ -1,18 +1,11 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import QRCode from 'react-native-qrcode-svg';
+import { QrData } from "../models/qr";
 
-type QrCardProps = {
-  data: {
-    id: number;
-    code: string;
-    number: string;
-    comment: string;
-  };
-};
 const COLORS = ['#F4A733', '#FFA477', '#B5B2F9', '#FF33A8', '#F4A733'];
 
-const QrCard = ({ data }: QrCardProps ) => {
+const QrCard = ({ data }: QrData ) => {
   const textColor = COLORS[data.id % COLORS.length];
 
   return (
