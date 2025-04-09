@@ -5,6 +5,9 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import HomeScreen from "./src/screens/Home/HomeScreen";
 import QrScreen from "./src/screens/Qr/QrScreen";
+import QrScreenDetail from "./src/screens/Qr/QrScreenDetail";
+import QrScreenEditor from "./src/screens/Qr/QrScreenEditor";
+import CompleteScreen from "./src/screens/Qr/CompleteScreen";
 import ParkingScreen from "./src/screens/Parking/ParkingScreen";
 import SearchScreen from "./src/screens/Search/SearchScreen";
 import InsuranceScreen from "./src/screens/Insurance/InsuranceScreen";
@@ -22,9 +25,43 @@ const HomeStack = () => (
                 header: () => <CustomHeader title="Home Screen" />,
             }}
         />
+    </Stack.Navigator>
+);
+const QrStack = () => (
+  <Stack.Navigator
+    screenOptions={{
+      headerStyle: { backgroundColor: "#3498db" }, // 배경색 변경
+      headerTintColor: "#fff", // 글자색 변경
+      headerTitleStyle: { fontSize: 20, fontWeight: "bold" }, // 제목 스타일
+    }}
+  >
+    <Stack.Screen
+      name="QrMain"
+      component={QrScreen}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="QrScreen"
+      component={QrScreen}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="QrScreenEditor"
+      component={QrScreenEditor}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="QrScreenDetail"
+      component={QrScreenDetail}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="CompleteScreen"
+      component={CompleteScreen}
+      options={{ headerShown: false }}
+    />
   </Stack.Navigator>
 );
-
 export default function App() {
   return (
     <NavigationContainer>
@@ -62,7 +99,7 @@ export default function App() {
         />
         <Tab.Screen
           name="Qr"
-          component={QrScreen}
+          component={QrStack}
           options={{
             tabBarIcon: ({ focused, color, size }) => (
               <Image
