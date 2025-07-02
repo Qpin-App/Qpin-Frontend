@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, TextInput, StyleSheet, ImageBackground, Dimensions } from "react-native";
+import { View, Text, TextInput, StyleSheet, ImageBackground, Dimensions, Image } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import QRCode from 'react-native-qrcode-svg';
 
@@ -7,13 +7,14 @@ const screenWidth = Dimensions.get("window").width;
 const rem = screenWidth / 24;
 
 interface QrDetailCardContentProps {
-  stickerImage: string | null;
+  stickerImage: any;
   qrUrl: string | null;
   phoneNumberInput: string | null;
   tempPhoneNumber: string;
   setTempPhoneNumber: (value: string) => void;
   handlePhoneNumberChange: () => void;
   comment: string | null;
+  setComment?: (value: string) => void;
   isEdit: boolean;
 }
 
@@ -25,15 +26,18 @@ const QrDetailCardContent: React.FC<QrDetailCardContentProps> = ({
   setTempPhoneNumber,
   handlePhoneNumberChange,
   comment,
+  setComment,
   isEdit
 }) => {
   return (
     <View style={styles.row}>
-      <ImageBackground
-        source={stickerImage ? { uri: stickerImage } : undefined}
-        style={styles.stickerBackground}
-        imageStyle={{ resizeMode: "contain" }}
-      />
+      {stickerImage && (
+        <ImageBackground
+          source={stickerImage}
+          style={styles.stickerBackground}
+          imageStyle={{ resizeMode: "contain" }}
+        />
+      )}
       <View style={styles.inputContainer}>
         {qrUrl ? (
           <QRCode value={qrUrl} size={rem * 5} />
@@ -59,6 +63,7 @@ const QrDetailCardContent: React.FC<QrDetailCardContentProps> = ({
               style={styles.input}
               value={comment || ""}
               placeholder="주차 메모 작성하기"
+              onChangeText={text => setComment && setComment(text)}
               editable={isEdit}
             />
           </View>

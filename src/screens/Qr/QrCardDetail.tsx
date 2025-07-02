@@ -26,6 +26,8 @@ interface QrDetailCardProps {
   comment: string | null;
   qrUrl?: string | null;
   isEdit: boolean;
+  onCommentChange?: (value: string) => void;
+  onPhoneNumberChange?: (value: string) => void;
 }
 
 const QrDetailCard: React.FC<QrDetailCardProps> = ({
@@ -36,34 +38,60 @@ const QrDetailCard: React.FC<QrDetailCardProps> = ({
   phoneNumber,
   comment,
   qrUrl,
-  isEdit
+  isEdit,
+  onCommentChange,
+  onPhoneNumberChange
 }) => {
-  const [stickerImage, setStickerImage] = useState<string | null>(null);
+  const [stickerImage, setStickerImage] = useState<any>(null);
   const [pictureImage, setPictureImage] = useState<string | null>(null);
   const [phoneNumberInput, setPhoneNumberInput] = useState<string | null>(phoneNumber);
   const [tempPhoneNumber, setTempPhoneNumber] = useState<string | null>(phoneNumber);
+  const [tempComment, setTempComment] = useState<string | null>(comment);
 
   useEffect(() => {
-    if (sticker) {
+    if (sticker && stickerImagesSrc[sticker]) {
       setStickerImage(stickerImagesSrc[sticker]);
+    } else {
+      setStickerImage(null);
     }
   }, [sticker]);
 
   useEffect(() => {
     if (imageUri) {
       setPictureImage(imageUri);
+    } else {
+      setPictureImage(null);
     }
   }, [imageUri]);
 
+  useEffect(() => {
+    setTempComment(comment);
+  }, [comment]);
+
+  useEffect(() => {
+    setTempPhoneNumber(phoneNumber);
+    setPhoneNumberInput(phoneNumber);
+  }, [phoneNumber]);
+
   const handlePhoneNumberChange = () => {
     setPhoneNumberInput(tempPhoneNumber);
+    if (onPhoneNumberChange && tempPhoneNumber) {
+      onPhoneNumberChange(tempPhoneNumber);
+    }
+  };
+
+  const handleCommentChange = (value: string) => {
+    setTempComment(value);
+    if (onCommentChange) {
+      onCommentChange(value);
+    }
   };
 
   return (
     <>
       {pictureImage ? (
         <ImageBackground
-          source={{ uri: pictureImage }}
+          source={{ uri: String(pictureImage) }}
           style={styles.card}
           imageStyle={{ resizeMode: "cover", borderRadius: 10 }}
         >
@@ -74,7 +102,8 @@ const QrDetailCard: React.FC<QrDetailCardProps> = ({
             tempPhoneNumber={tempPhoneNumber || ""}
             setTempPhoneNumber={setTempPhoneNumber}
             handlePhoneNumberChange={handlePhoneNumberChange}
-            comment={comment}
+            comment={tempComment}
+            setComment={handleCommentChange}
             isEdit={isEdit}
           />
         </ImageBackground>
@@ -92,7 +121,8 @@ const QrDetailCard: React.FC<QrDetailCardProps> = ({
             tempPhoneNumber={tempPhoneNumber || ""}
             setTempPhoneNumber={setTempPhoneNumber}
             handlePhoneNumberChange={handlePhoneNumberChange}
-            comment={comment}
+            comment={tempComment}
+            setComment={handleCommentChange}
             isEdit={isEdit}
           />
         </LinearGradient>

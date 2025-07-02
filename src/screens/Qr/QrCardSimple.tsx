@@ -1,9 +1,10 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image, ImageBackground } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import type { StackNavigationProp } from "@react-navigation/stack";
 import QRCode from 'react-native-qrcode-svg';
 import Icon from "react-native-vector-icons/FontAwesome";
-import { QrData } from "../../models/qr";
+import type { QrData } from "../../models/qr";
 
 interface QrSimpleCardProps {
   data: QrData;
@@ -12,19 +13,30 @@ interface QrSimpleCardProps {
   onSelect?: (id: string | number) => void;
 }
 
+// 네비게이션 파라미터 타입 정의
+type RootStackParamList = {
+  QrScreen: undefined;
+  QrScreenDetail: QrData;
+  QrScreenEditor: Partial<QrData>;
+  CompleteScreen: undefined;
+};
+
+// 네비게이션 타입 정의
+type NavigationProp = StackNavigationProp<RootStackParamList>;
+
 const QrSimpleCard: React.FC<QrSimpleCardProps> = ({
   data,
   isSelectable = false,
   isSelected = false,
   onSelect,
 }) => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp>();
 
   const handlePressDetail = () => {
     if (isSelectable && onSelect) {
       onSelect(data.id);
     } else {
-      navigation.navigate("QrScreenDetail", { ...data });
+      navigation.navigate("QrScreenDetail", data);
     }
   };
 
@@ -54,7 +66,7 @@ const QrSimpleCard: React.FC<QrSimpleCardProps> = ({
         <ImageBackground
           source={
             data.imageUri
-              ? { uri: data.imageUri }
+              ? { uri: String(data.imageUri) }
               : require("../../assets/icons/qr_example_background.png")
           }
           style={styles.qrContainer}
