@@ -17,17 +17,27 @@ const screenWidth = Dimensions.get("window").width;
 const rem = screenWidth / 24;
 const cardSize = screenWidth - rem * 5;
 
-type QrDetailCardProps = {
+interface QrDetailCardProps {
   backgroundColor: string;
   gradientColor: string;
   sticker: string | null;
   imageUri: string | null;
   phoneNumber: string | null;
   comment: string | null;
+  qrUrl?: string | null;
   isEdit: boolean;
-};
+}
 
-const QrDetailCard = ({ backgroundColor, gradientColor, sticker, imageUri, phoneNumber, comment, isEdit }: QrDetailCardProps) => {
+const QrDetailCard: React.FC<QrDetailCardProps> = ({
+  backgroundColor,
+  gradientColor,
+  sticker,
+  imageUri,
+  phoneNumber,
+  comment,
+  qrUrl,
+  isEdit
+}) => {
   const [stickerImage, setStickerImage] = useState<string | null>(null);
   const [pictureImage, setPictureImage] = useState<string | null>(null);
   const [phoneNumberInput, setPhoneNumberInput] = useState<string | null>(phoneNumber);
@@ -59,8 +69,9 @@ const QrDetailCard = ({ backgroundColor, gradientColor, sticker, imageUri, phone
         >
           <QrCardDetailContent
             stickerImage={stickerImage}
+            qrUrl={qrUrl ?? null}
             phoneNumberInput={phoneNumberInput}
-            tempPhoneNumber={tempPhoneNumber}
+            tempPhoneNumber={tempPhoneNumber || ""}
             setTempPhoneNumber={setTempPhoneNumber}
             handlePhoneNumberChange={handlePhoneNumberChange}
             comment={comment}
@@ -76,8 +87,9 @@ const QrDetailCard = ({ backgroundColor, gradientColor, sticker, imageUri, phone
         >
           <QrCardDetailContent
             stickerImage={stickerImage}
+            qrUrl={qrUrl ?? null}
             phoneNumberInput={phoneNumberInput}
-            tempPhoneNumber={tempPhoneNumber}
+            tempPhoneNumber={tempPhoneNumber || ""}
             setTempPhoneNumber={setTempPhoneNumber}
             handlePhoneNumberChange={handlePhoneNumberChange}
             comment={comment}

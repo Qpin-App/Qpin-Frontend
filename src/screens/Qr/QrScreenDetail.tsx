@@ -4,15 +4,31 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import CustomStackHeader from "../../components/CustomStackHeader";
 import CommonModal from "../../components/CommonModal";
 import QrCardDetail from "./QrCardDetail";
+import { NavigationProp } from "@react-navigation/native";
 
 const screenWidth = Dimensions.get("window").width;
 const rem = screenWidth / 24;
 const cardSize = screenWidth - rem * 5;
 
-const QrScreenDetail = ({navigation}: any) => {
+interface QrScreenDetailProps {
+  navigation: NavigationProp<any>;
+}
+
+interface RouteParams {
+  id: string | number;
+  backgroundColor: string;
+  gradientColor: string;
+  sticker: string | null;
+  imageUri: string | null;
+  phoneNumber: string;
+  comment: string;
+  qrUrl?: string;
+}
+
+const QrScreenDetail = ({navigation}: QrScreenDetailProps) => {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const route = useRoute();
-  const { id, backgroundColor, gradientColor, sticker, imageUri, phoneNumber, comment } = route.params;
+  const { id, backgroundColor, gradientColor, sticker, imageUri, phoneNumber, comment } = route.params as RouteParams;
 
   const handleDeleteQr = () => {
     setModalVisible(false);

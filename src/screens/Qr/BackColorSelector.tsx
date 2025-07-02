@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Image, FlatList } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
+import { LayoutChangeEvent } from "react-native";
 
 const INITIAL_COLOR = "#F8F8F8";
 const COLORS: string[] = ["#EF8582", "#F7CCA5", "#FCF2B8", "#C0FCBE", "#B5E1FC", "#9C98F8"];
@@ -23,7 +24,7 @@ const BackColorSelector = ({ currentColor, onSelectColor, onSelectGradient }: Ba
   const [selectedColor, setSelectedColor] = useState(currentColor);
   const [gradientWidth, setGradientWidth] = useState(0);
 
-  const handleLayout = (e: any) => {
+  const handleLayout = (e: LayoutChangeEvent) => {
     const { width } = e.nativeEvent.layout;
     setGradientWidth(width);
   };
@@ -40,14 +41,15 @@ const BackColorSelector = ({ currentColor, onSelectColor, onSelectGradient }: Ba
 
     // selectedIndex에 따라 GRADIENTS에서 매핑된 색상 선택
     let newColor = "";
-    if (selectedIndex === 0) {
-      newColor = GRADIENTS[selectedColor][0];
-    } else if (selectedIndex === 1) {
-      newColor = GRADIENTS[selectedColor][1];
-    } else {
-      newColor = GRADIENTS[selectedColor][2];
+    if (selectedColor && GRADIENTS[selectedColor]) {
+      if (selectedIndex === 0) {
+        newColor = GRADIENTS[selectedColor][0];
+      } else if (selectedIndex === 1) {
+        newColor = GRADIENTS[selectedColor][1];
+      } else {
+        newColor = GRADIENTS[selectedColor][2];
+      }
     }
-
     onSelectGradient(newColor);
   };
   return (
@@ -82,7 +84,7 @@ const BackColorSelector = ({ currentColor, onSelectColor, onSelectGradient }: Ba
           onLayout={handleLayout}
         >
           <LinearGradient
-            colors={GRADIENTS[selectedColor] || ["#DDDDDD", "#EEEEEE", "#FFFFFF"]}
+            colors={GRADIENTS[selectedColor || ""] || ["#DDDDDD", "#EEEEEE", "#FFFFFF"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={styles.gradientBar}
@@ -131,6 +133,10 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 12,
     borderRadius: 10,
+  },
+  gradientIcon: {
+    width: 16,
+    height: 16,
   },
 });
 

@@ -1,10 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList, Dimensions, ImageBackground } from "react-native";
+import React from "react";
+import { View, Text, TextInput, StyleSheet, ImageBackground, Dimensions } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import QRCode from 'react-native-qrcode-svg';
 
-type QrDetailCardContentProps = {
+const screenWidth = Dimensions.get("window").width;
+const rem = screenWidth / 24;
+
+interface QrDetailCardContentProps {
   stickerImage: string | null;
+  qrUrl: string | null;
   phoneNumberInput: string | null;
   tempPhoneNumber: string;
   setTempPhoneNumber: (value: string) => void;
@@ -13,29 +17,26 @@ type QrDetailCardContentProps = {
   isEdit: boolean;
 }
 
-const screenWidth = Dimensions.get("window").width;
-const rem = screenWidth / 24;
-const cardSize = screenWidth - rem * 5;
-
-const QrDetailCardContent = ({
+const QrDetailCardContent: React.FC<QrDetailCardContentProps> = ({
   stickerImage,
+  qrUrl,
   phoneNumberInput,
   tempPhoneNumber,
   setTempPhoneNumber,
   handlePhoneNumberChange,
   comment,
   isEdit
-}: QrDetailCardContentProps) => {
+}) => {
   return (
     <View style={styles.row}>
       <ImageBackground
-        source={stickerImage || undefined}
+        source={stickerImage ? { uri: stickerImage } : undefined}
         style={styles.stickerBackground}
         imageStyle={{ resizeMode: "contain" }}
       />
       <View style={styles.inputContainer}>
-        {phoneNumberInput ? (
-          <QRCode value={phoneNumberInput} size={rem * 5} />
+        {qrUrl ? (
+          <QRCode value={qrUrl} size={rem * 5} />
         ) : (
           <View style={styles.qrBox} />
         )}
@@ -56,7 +57,7 @@ const QrDetailCardContent = ({
             <Icon name="pencil-outline" size={18} color="#B9B9B9" />
             <TextInput
               style={styles.input}
-              value={comment}
+              value={comment || ""}
               placeholder="주차 메모 작성하기"
               editable={isEdit}
             />
@@ -74,10 +75,10 @@ const styles = StyleSheet.create({
   },
   stickerBackground: {
     position: "absolute",
-    top: cardSize/3,
-    left: cardSize/5,
-    width: cardSize/2,
-    height: cardSize/2,
+    top: screenWidth/3,
+    left: screenWidth/5,
+    width: screenWidth/2,
+    height: screenWidth/2,
   },
   inputContainer: {
     width: "100%",

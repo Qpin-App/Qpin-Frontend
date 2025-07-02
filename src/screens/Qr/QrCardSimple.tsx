@@ -1,20 +1,22 @@
-import React, { useState } from "react";
+import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image, ImageBackground } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import QRCode from 'react-native-qrcode-svg';
-import Icon from "react-native-vector-icons/FontAwesome"; // 변경된 부분
-import { QrData } from "../models/qr";
+import Icon from "react-native-vector-icons/FontAwesome";
+import { QrData } from "../../models/qr";
 
-const QrSimpleCard = ({
+interface QrSimpleCardProps {
+  data: QrData;
+  isSelectable?: boolean;
+  isSelected?: boolean;
+  onSelect?: (id: string | number) => void;
+}
+
+const QrSimpleCard: React.FC<QrSimpleCardProps> = ({
   data,
   isSelectable = false,
   isSelected = false,
   onSelect,
-}: {
-  data: QrData;
-  isSelectable?: boolean;
-  isSelected?: boolean;
-  onSelect?: (id: string) => void;
 }) => {
   const navigation = useNavigation();
 
@@ -30,7 +32,7 @@ const QrSimpleCard = ({
     navigation.navigate("QrScreenEditor", {});
   }
 
-  if(data.id == "add") {
+  if(data.id === "add") {
     return (
       <TouchableOpacity onPress={handlePressAdd}>
         <View style={styles.container}>
@@ -45,40 +47,43 @@ const QrSimpleCard = ({
       </TouchableOpacity>
     );
   }
-  else {
-    return (
-      <TouchableOpacity onPress={handlePressDetail}>
-        <View style={styles.container}>
-          <ImageBackground
-            source={
-              data.imageUri
-                ? { uri: data.imageUri }
-                : require("../../assets/icons/qr_example_background.png")
-            }
-            style={styles.qrContainer}
-            imageStyle={{ borderRadius: 5 }}
-          >
-            {isSelectable && (
-              <TouchableOpacity
-                style={styles.checkboxContainer}
-                onPress={() => onSelect && onSelect(data.id)}
-              >
-                <Icon
-                 name={isSelected ? "check-circle" : "circle-o"}
-                 size={15}
-                 color={isSelected ? "#38B7FF" : "#aaa"}
-                />
-              </TouchableOpacity>
+
+  return (
+    <TouchableOpacity onPress={handlePressDetail}>
+      <View style={styles.container}>
+        <ImageBackground
+          source={
+            data.imageUri
+              ? { uri: data.imageUri }
+              : require("../../assets/icons/qr_example_background.png")
+          }
+          style={styles.qrContainer}
+          imageStyle={{ borderRadius: 5 }}
+        >
+          {isSelectable && (
+            <TouchableOpacity
+              style={styles.checkboxContainer}
+              onPress={() => onSelect && onSelect(data.id)}
+            >
+              <Icon
+               name={isSelected ? "check-circle" : "circle-o"}
+               size={15}
+               color={isSelected ? "#38B7FF" : "#aaa"}
+              />
+            </TouchableOpacity>
+          )}
+          <View style={styles.qrArea}>
+            {data.qrUrl ? (
+              <QRCode size={45} value={data.qrUrl} />
+            ) : (
+              <View style={styles.qrPlaceholder} />
             )}
-            <View style={styles.qrArea}>
-              <QRCode size={45} value={data.phoneNumber} />
-            </View>
-          </ImageBackground>
-          <Text style={styles.qrContent}>{data.phoneNumber}</Text>
-        </View>
-      </TouchableOpacity>
-    );
-  }
+          </View>
+        </ImageBackground>
+        <Text style={styles.qrContent}>{data.phoneNumber}</Text>
+      </View>
+    </TouchableOpacity>
+  );
 };
 
 const styles = StyleSheet.create({
@@ -118,7 +123,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     width: 55,
     height: 55,
-    borderRadius:5,
+    borderRadius: 5,
   },
   qrContent: {
     marginTop: 5,
@@ -135,6 +140,16 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     justifyContent: "center",
     alignItems: "center",
+  },
+  datePickerArrow: {
+    width: 24,
+    height: 24,
+  },
+  qrPlaceholder: {
+    width: 45,
+    height: 45,
+    backgroundColor: '#E1E6E9',
+    borderRadius: 5,
   }
 });
 

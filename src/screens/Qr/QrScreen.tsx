@@ -1,13 +1,17 @@
 import React, { useState } from "react";
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image } from "react-native";
 import QrCardSimple from "./QrCardSimple";
-import { QrData } from "../models/qr";
+import { QrData } from "../../models/qr";
 import CommonModal from "../../components/CommonModal";
 
 const qrMockData: QrData[] = [
   {
     id: "add",
-    number: "",
+    backgroundColor: "",
+    gradientColor: "",
+    sticker: null,
+    imageUri: null,
+    phoneNumber: "",
     comment: "안심 QR 카드 생성"
   },
   {
@@ -42,7 +46,7 @@ const qrMockData: QrData[] = [
 const QrScreen = () => {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [isSelectionMode, setIsSelectionMode] = useState<boolean>(false);
-  const [selectedItems, setSelectedItems] = useState<string[]>([]);
+  const [selectedItems, setSelectedItems] = useState<(string | number)[]>([]);
 
   const toggleSelectionMode = () => {
     setIsSelectionMode(!isSelectionMode);
@@ -67,7 +71,7 @@ const QrScreen = () => {
       data={item}
       isSelectable={isSelectionMode}
       isSelected={selectedItems.includes(item.id)}
-      onSelect={handleSelectItem}
+      onSelect={(id: string | number) => handleSelectItem(id.toString())}
     />
   );
 
