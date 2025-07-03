@@ -7,7 +7,7 @@ const screenWidth = Dimensions.get("window").width;
 const halfWidth = screenWidth / 2;
 
 const CompleteScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
   const handleOutQr = () => {
     navigation.navigate("QrScreen", {});
   }

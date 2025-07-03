@@ -4,14 +4,7 @@ import LinearGradient from "react-native-linear-gradient";
 import HomeInfo from "./HomeInfo";
 import WeeklyCalendar from "./WeeklyCalendar";
 import QrCard from "./QrCard";
-
-const qrMockData = [
-  { id: 1, code: 'Qr1', number: '123-456-7890', comment: '잠깐 편의점 갑니다!' },
-  { id: 2, code: 'Qr2', number: '098-765-4321', comment: '10분간 자리 비웁니다' },
-  { id: 3, code: 'Qr3', number: '123-987-6543', comment: '은행 다녀옵니다' },
-  { id: 4, code: 'Qr4', number: '876-543-2109', comment: '1박 2일 여행 다녀옵니다' },
-  { id: 5, code: 'Qr5', number: '789-012-3456', comment: '유료 주차장입니다' },
-];
+import { qrMockData } from "../../models/qr";
 
 const HomeScreen = () => {
   return (
@@ -37,7 +30,7 @@ const HomeScreen = () => {
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.scrollContainer}
         >
-          {qrMockData.map((qr) => (
+          {qrMockData.filter(qr => qr.id !== "add").map((qr) => (
             <QrCard key={qr.id} data={qr} />
           ))}
         </ScrollView>

@@ -1,17 +1,28 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import QRCode from 'react-native-qrcode-svg';
-import { QrData } from "../models/qr";
+import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
+import { QrData } from "../../models/qr";
 
 const COLORS = ['#F4A733', '#FFA477', '#B5B2F9', '#FF33A8', '#F4A733'];
 
-const QrCard = ({ data }: QrData ) => {
-  const textColor = COLORS[data.id % COLORS.length];
+interface QrCardProps {
+  data: QrData;
+}
+
+const QrCard: React.FC<QrCardProps> = ({ data }) => {
+  const textColor = COLORS[Number(data.id) % COLORS.length];
 
   return (
     <View style={styles.container}>
-      <QRCode value={data.number} size={80} />
-      <Text style={[{ color: textColor }, styles.qrNumber]}>{data.number}</Text>
+      {data.qrUrl ? (
+        <Image 
+          source={typeof data.qrUrl === 'string' ? { uri: data.qrUrl } : data.qrUrl}
+          style={styles.qrImage}
+          resizeMode="contain"
+        />
+      ) : (
+        <View style={styles.qrPlaceholder} />
+      )}
+      <Text style={[{ color: textColor }, styles.qrNumber]}>{data.phoneNumber}</Text>
       <Text
         style={styles.qrComment}
         numberOfLines={1}
@@ -38,6 +49,17 @@ const styles = StyleSheet.create({
     elevation: 10,
     marginTop: 10,
     marginBottom: 10,
+  },
+  qrImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 5,
+  },
+  qrPlaceholder: {
+    width: 80,
+    height: 80,
+    backgroundColor: '#E1E6E9',
+    borderRadius: 5,
   },
   qrNumber: {
     marginTop: 8,
