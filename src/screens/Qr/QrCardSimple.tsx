@@ -2,7 +2,6 @@ import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image, ImageBackground } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import type { StackNavigationProp } from "@react-navigation/stack";
-import QRCode from 'react-native-qrcode-svg';
 import Icon from "react-native-vector-icons/FontAwesome";
 import type { QrData } from "../../models/qr";
 
@@ -86,7 +85,11 @@ const QrSimpleCard: React.FC<QrSimpleCardProps> = ({
           )}
           <View style={styles.qrArea}>
             {data.qrUrl ? (
-              <QRCode size={45} value={data.qrUrl} />
+              <Image 
+                source={typeof data.qrUrl === 'string' ? { uri: data.qrUrl } : data.qrUrl}
+                style={styles.qrImage}
+                resizeMode="contain"
+              />
             ) : (
               <View style={styles.qrPlaceholder} />
             )}
@@ -162,7 +165,12 @@ const styles = StyleSheet.create({
     height: 45,
     backgroundColor: '#E1E6E9',
     borderRadius: 5,
-  }
+  },
+  qrImage: {
+    width: 45,
+    height: 45,
+    borderRadius: 5,
+  },
 });
 
 export default QrSimpleCard;

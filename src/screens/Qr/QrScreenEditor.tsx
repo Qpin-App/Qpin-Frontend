@@ -7,8 +7,7 @@ import QrCardDetail from "./QrCardDetail";
 import BackColorSelector from "./BackColorSelector";
 import BackStickerSelector from "./BackStickerSelector";
 import Icon from "react-native-vector-icons/Ionicons";
-import QRCode from 'react-native-qrcode-svg';
-import { QrData } from "../../models/qr";
+import { QrData, qrMockData } from "../../models/qr";
 
 // 네비게이션 파라미터 타입 정의
 type RootStackParamList = {
@@ -20,48 +19,48 @@ type RootStackParamList = {
 
 type NavigationProp = StackNavigationProp<RootStackParamList>;
 
-// Mock 데이터
-export const qrMockData: QrData[] = [
-  {
-    id: "add",
-    backgroundColor: "",
-    gradientColor: "",
-    sticker: null,
-    imageUri: null,
-    phoneNumber: "",
-    comment: "안심 QR 카드 생성"
-  },
-  {
-    id: 1,
-    backgroundColor: "#B5E1FC",
-    gradientColor: "#9C98F8",
-    sticker: "heart",
-    imageUri: "file:///data/user/0/com.myapp/cache/rn_image_picker_lib_temp_1b34151c-dc51-4b77-98a2-b193f99cbe7f.jpg",
-    phoneNumber: "010-4820-9952",
-    comment: "잠깐 편의점 갑니다!",
-    qrUrl: "http://localhost:8080/qr/1"
-  },
-  {
-    id: 2,
-    backgroundColor: "#B5E1FC",
-    gradientColor: "#9C98F8",
-    sticker: "heart",
-    imageUri: "",
-    phoneNumber: "098-765-4321",
-    comment: "10분간 자리 비웁니다",
-    qrUrl: "http://localhost:8080/qr/2"
-  },
-  {
-    id: 3,
-    backgroundColor: "#B5E1FC",
-    gradientColor: "#9C98F8",
-    sticker: "star",
-    imageUri: "",
-    phoneNumber: "098-765-4321",
-    comment: "여행 다녀옵니다",
-    qrUrl: "http://localhost:8080/qr/3"
-  },
-];
+// // Mock 데이터
+// export const qrMockData: QrData[] = [
+//   {
+//     id: "add",
+//     backgroundColor: "",
+//     gradientColor: "",
+//     sticker: null,
+//     imageUri: null,
+//     phoneNumber: "",
+//     comment: "안심 QR 카드 생성"
+//   },
+//   {
+//     id: 1,
+//     backgroundColor: "#B5E1FC",
+//     gradientColor: "#9C98F8",
+//     sticker: "heart",
+//     imageUri: "file:///data/user/0/com.myapp/cache/rn_image_picker_lib_temp_1b34151c-dc51-4b77-98a2-b193f99cbe7f.jpg",
+//     phoneNumber: "010-4820-9952",
+//     comment: "잠깐 편의점 갑니다!",
+//     qrUrl: "http://localhost:8080/qr/1"
+//   },
+//   {
+//     id: 2,
+//     backgroundColor: "#B5E1FC",
+//     gradientColor: "#9C98F8",
+//     sticker: "heart",
+//     imageUri: "",
+//     phoneNumber: "098-765-4321",
+//     comment: "10분간 자리 비웁니다",
+//     qrUrl: "http://localhost:8080/qr/2"
+//   },
+//   {
+//     id: 3,
+//     backgroundColor: "#B5E1FC",
+//     gradientColor: "#9C98F8",
+//     sticker: "star",
+//     imageUri: "",
+//     phoneNumber: "098-765-4321",
+//     comment: "여행 다녀옵니다",
+//     qrUrl: "http://localhost:8080/qr/3"
+//   },
+// ];
 
 const QrScreenEditor: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
@@ -73,9 +72,10 @@ const QrScreenEditor: React.FC = () => {
     imageUri?: string | null;
     phoneNumber?: string;
     comment?: string;
+    qrUrl?: string;
     isEdit?: boolean;
   };
-  const { backgroundColor, gradientColor, sticker, imageUri, phoneNumber, comment, isEdit } = params;
+  const { backgroundColor, gradientColor, sticker, imageUri, phoneNumber, comment, qrUrl, isEdit } = params;
 
   const [activeTab, setActiveTab] = useState<string>("배경색");
   const [selectedColor, setSelectedColor] = useState<string>(backgroundColor || "#F8F8F8");
@@ -84,6 +84,7 @@ const QrScreenEditor: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(imageUri || null);
   const [currentPhoneNumber, setCurrentPhoneNumber] = useState<string | null>(phoneNumber || null);
   const [currentComment, setCurrentComment] = useState<string | null>(comment || null);
+  const [currentQrUrl, setCurrentQrUrl] = useState<string | undefined>(qrUrl);
 
   const handleSave = () => {
     const qrData: Partial<QrData> = {
@@ -93,6 +94,7 @@ const QrScreenEditor: React.FC = () => {
       imageUri: selectedImage,
       phoneNumber: currentPhoneNumber || "",
       comment: currentComment || "",
+      qrUrl: currentQrUrl,
     };
     navigation.navigate("CompleteScreen", qrData);
   };
@@ -115,6 +117,7 @@ const QrScreenEditor: React.FC = () => {
         imageUri={selectedImage}
         phoneNumber={currentPhoneNumber}
         comment={currentComment}
+        qrUrl={currentQrUrl}
         isEdit={true}
         onCommentChange={handleCommentChange}
         onPhoneNumberChange={handlePhoneNumberChange}

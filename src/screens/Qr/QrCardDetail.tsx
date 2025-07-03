@@ -24,7 +24,7 @@ interface QrDetailCardProps {
   imageUri: string | null;
   phoneNumber: string | null;
   comment: string | null;
-  qrUrl?: string | null;
+  qrUrl?: string;
   isEdit: boolean;
   onCommentChange?: (value: string) => void;
   onPhoneNumberChange?: (value: string) => void;
@@ -44,7 +44,6 @@ const QrDetailCard: React.FC<QrDetailCardProps> = ({
 }) => {
   const [stickerImage, setStickerImage] = useState<any>(null);
   const [pictureImage, setPictureImage] = useState<string | null>(null);
-  const [phoneNumberInput, setPhoneNumberInput] = useState<string | null>(phoneNumber);
   const [tempPhoneNumber, setTempPhoneNumber] = useState<string | null>(phoneNumber);
   const [tempComment, setTempComment] = useState<string | null>(comment);
 
@@ -70,11 +69,9 @@ const QrDetailCard: React.FC<QrDetailCardProps> = ({
 
   useEffect(() => {
     setTempPhoneNumber(phoneNumber);
-    setPhoneNumberInput(phoneNumber);
   }, [phoneNumber]);
 
   const handlePhoneNumberChange = () => {
-    setPhoneNumberInput(tempPhoneNumber);
     if (onPhoneNumberChange && tempPhoneNumber) {
       onPhoneNumberChange(tempPhoneNumber);
     }
@@ -97,12 +94,11 @@ const QrDetailCard: React.FC<QrDetailCardProps> = ({
         >
           <QrCardDetailContent
             stickerImage={stickerImage}
-            qrUrl={qrUrl ?? null}
-            phoneNumberInput={phoneNumberInput}
+            qrUrl={qrUrl}
             tempPhoneNumber={tempPhoneNumber || ""}
             setTempPhoneNumber={setTempPhoneNumber}
             handlePhoneNumberChange={handlePhoneNumberChange}
-            comment={tempComment}
+            comment={tempComment || ""}
             setComment={handleCommentChange}
             isEdit={isEdit}
           />
@@ -116,12 +112,11 @@ const QrDetailCard: React.FC<QrDetailCardProps> = ({
         >
           <QrCardDetailContent
             stickerImage={stickerImage}
-            qrUrl={qrUrl ?? null}
-            phoneNumberInput={phoneNumberInput}
+            qrUrl={qrUrl}
             tempPhoneNumber={tempPhoneNumber || ""}
             setTempPhoneNumber={setTempPhoneNumber}
             handlePhoneNumberChange={handlePhoneNumberChange}
-            comment={tempComment}
+            comment={tempComment || ""}
             setComment={handleCommentChange}
             isEdit={isEdit}
           />

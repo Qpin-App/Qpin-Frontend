@@ -6,10 +6,12 @@ export interface QrData {
   imageUri: string | null;
   phoneNumber: string;
   comment: string;
-  qrUrl?: string; // 백엔드에서 생성된 QR URL
+  qrUrl?: any; // 백엔드에서 생성된 QR URL 또는 로컬 이미지
 }
 
 // Mock 데이터
+const mockQrUrl = require('../assets/icons/mock_qrcode.png');
+
 export const qrMockData: QrData[] = [
   {
     id: "add",
@@ -25,10 +27,10 @@ export const qrMockData: QrData[] = [
     backgroundColor: "#B5E1FC",
     gradientColor: "#9C98F8",
     sticker: "heart",
-    imageUri: "file:///data/user/0/com.myapp/cache/rn_image_picker_lib_temp_1b34151c-dc51-4b77-98a2-b193f99cbe7f.jpg",
+    imageUri: "",
     phoneNumber: "010-4820-9952",
     comment: "잠깐 편의점 갑니다!",
-    qrUrl: "http://localhost:8080/qr/1"
+    qrUrl: mockQrUrl
   },
   {
     id: 2,
@@ -38,7 +40,7 @@ export const qrMockData: QrData[] = [
     imageUri: "",
     phoneNumber: "098-765-4321",
     comment: "10분간 자리 비웁니다",
-    qrUrl: "http://localhost:8080/qr/2"
+    qrUrl: mockQrUrl
   },
   {
     id: 3,
@@ -48,6 +50,6 @@ export const qrMockData: QrData[] = [
     imageUri: "",
     phoneNumber: "098-765-4321",
     comment: "여행 다녀옵니다",
-    qrUrl: "http://localhost:8080/qr/3"
+    qrUrl: mockQrUrl
   }
 ];

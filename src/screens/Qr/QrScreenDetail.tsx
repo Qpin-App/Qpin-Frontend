@@ -28,7 +28,7 @@ interface RouteParams {
 const QrScreenDetail = ({navigation}: QrScreenDetailProps) => {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const route = useRoute();
-  const { id, backgroundColor, gradientColor, sticker, imageUri, phoneNumber, comment } = route.params as RouteParams;
+  const { id, backgroundColor, gradientColor, sticker, imageUri, phoneNumber, comment, qrUrl } = route.params as RouteParams;
 
   const handleDeleteQr = () => {
     setModalVisible(false);
@@ -43,6 +43,7 @@ const QrScreenDetail = ({navigation}: QrScreenDetailProps) => {
      imageUri,
      phoneNumber,
      comment,
+     qrUrl,
     });
   };
 
@@ -57,6 +58,7 @@ const QrScreenDetail = ({navigation}: QrScreenDetailProps) => {
           imageUri={imageUri}
           phoneNumber={phoneNumber}
           comment={comment}
+          qrUrl={qrUrl}
           isEdit={false}
         />
       </View>

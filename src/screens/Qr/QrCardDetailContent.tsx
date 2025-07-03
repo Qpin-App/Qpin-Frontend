@@ -1,19 +1,18 @@
 import React from "react";
-import { View, Text, TextInput, StyleSheet, ImageBackground, Dimensions, Image } from "react-native";
+import { View, Text, TextInput, StyleSheet, Image, ImageBackground, Dimensions } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
-import QRCode from 'react-native-qrcode-svg';
 
 const screenWidth = Dimensions.get("window").width;
 const rem = screenWidth / 24;
 
 interface QrDetailCardContentProps {
   stickerImage: any;
-  qrUrl: string | null;
-  phoneNumberInput: string | null;
-  tempPhoneNumber: string;
-  setTempPhoneNumber: (value: string) => void;
-  handlePhoneNumberChange: () => void;
-  comment: string | null;
+  qrUrl?: string | null;
+  phoneNumberInput?: string;
+  tempPhoneNumber?: string;
+  setTempPhoneNumber?: (value: string) => void;
+  handlePhoneNumberChange?: () => void;
+  comment?: string;
   setComment?: (value: string) => void;
   isEdit: boolean;
 }
@@ -40,7 +39,11 @@ const QrDetailCardContent: React.FC<QrDetailCardContentProps> = ({
       )}
       <View style={styles.inputContainer}>
         {qrUrl ? (
-          <QRCode value={qrUrl} size={rem * 5} />
+          <Image 
+            source={typeof qrUrl === 'string' ? { uri: qrUrl } : qrUrl}
+            style={styles.qrImage}
+            resizeMode="contain"
+          />
         ) : (
           <View style={styles.qrBox} />
         )}
@@ -100,6 +103,11 @@ const styles = StyleSheet.create({
     height: rem * 5,
     borderWidth: 1,
     borderColor: "#E0E0E0",
+    borderRadius: 5,
+  },
+  qrImage: {
+    width: rem * 5,
+    height: rem * 5,
     borderRadius: 5,
   },
   inputBox: {
