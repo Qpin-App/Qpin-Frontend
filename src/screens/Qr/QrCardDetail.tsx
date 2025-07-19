@@ -17,53 +17,89 @@ const screenWidth = Dimensions.get("window").width;
 const rem = screenWidth / 24;
 const cardSize = screenWidth - rem * 5;
 
-type QrDetailCardProps = {
+interface QrDetailCardProps {
   backgroundColor: string;
   gradientColor: string;
   sticker: string | null;
   imageUri: string | null;
   phoneNumber: string | null;
   comment: string | null;
+  qrUrl?: string;
   isEdit: boolean;
-};
+  onCommentChange?: (value: string) => void;
+  onPhoneNumberChange?: (value: string) => void;
+}
 
-const QrDetailCard = ({ backgroundColor, gradientColor, sticker, imageUri, phoneNumber, comment, isEdit }: QrDetailCardProps) => {
-  const [stickerImage, setStickerImage] = useState<string | null>(null);
+const QrDetailCard: React.FC<QrDetailCardProps> = ({
+  backgroundColor,
+  gradientColor,
+  sticker,
+  imageUri,
+  phoneNumber,
+  comment,
+  qrUrl,
+  isEdit,
+  onCommentChange,
+  onPhoneNumberChange
+}) => {
+  const [stickerImage, setStickerImage] = useState<any>(null);
   const [pictureImage, setPictureImage] = useState<string | null>(null);
-  const [phoneNumberInput, setPhoneNumberInput] = useState<string | null>(phoneNumber);
   const [tempPhoneNumber, setTempPhoneNumber] = useState<string | null>(phoneNumber);
+  const [tempComment, setTempComment] = useState<string | null>(comment);
 
   useEffect(() => {
-    if (sticker) {
+    if (sticker && stickerImagesSrc[sticker]) {
       setStickerImage(stickerImagesSrc[sticker]);
+    } else {
+      setStickerImage(null);
     }
   }, [sticker]);
 
   useEffect(() => {
     if (imageUri) {
       setPictureImage(imageUri);
+    } else {
+      setPictureImage(null);
     }
   }, [imageUri]);
 
+  useEffect(() => {
+    setTempComment(comment);
+  }, [comment]);
+
+  useEffect(() => {
+    setTempPhoneNumber(phoneNumber);
+  }, [phoneNumber]);
+
   const handlePhoneNumberChange = () => {
-    setPhoneNumberInput(tempPhoneNumber);
+    if (onPhoneNumberChange && tempPhoneNumber) {
+      onPhoneNumberChange(tempPhoneNumber);
+    }
+  };
+
+  const handleCommentChange = (value: string) => {
+    setTempComment(value);
+    if (onCommentChange) {
+      onCommentChange(value);
+    }
   };
 
   return (
     <>
       {pictureImage ? (
         <ImageBackground
-          source={{ uri: pictureImage }}
+          source={{ uri: String(pictureImage) }}
           style={styles.card}
           imageStyle={{ resizeMode: "cover", borderRadius: 10 }}
         >
           <QrCardDetailContent
             stickerImage={stickerImage}
-            phoneNumberInput={phoneNumberInput}
-            tempPhoneNumber={tempPhoneNumber}
+            qrUrl={qrUrl}
+            tempPhoneNumber={tempPhoneNumber || ""}
             setTempPhoneNumber={setTempPhoneNumber}
             handlePhoneNumberChange={handlePhoneNumberChange}
-            comment={comment}
+            comment={tempComment || ""}
+            setComment={handleCommentChange}
             isEdit={isEdit}
           />
         </ImageBackground>
@@ -76,11 +112,12 @@ const QrDetailCard = ({ backgroundColor, gradientColor, sticker, imageUri, phone
         >
           <QrCardDetailContent
             stickerImage={stickerImage}
-            phoneNumberInput={phoneNumberInput}
-            tempPhoneNumber={tempPhoneNumber}
+            qrUrl={qrUrl}
+            tempPhoneNumber={tempPhoneNumber || ""}
             setTempPhoneNumber={setTempPhoneNumber}
             handlePhoneNumberChange={handlePhoneNumberChange}
-            comment={comment}
+            comment={tempComment || ""}
+            setComment={handleCommentChange}
             isEdit={isEdit}
           />
         </LinearGradient>

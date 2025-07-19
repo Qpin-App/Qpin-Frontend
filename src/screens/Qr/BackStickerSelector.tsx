@@ -12,7 +12,12 @@ const stickerImages = {
   calling: require("../../assets/icons/calling_icon.png"),
 };
 
-const BackStickerSelector = ({ onSelectSticker, onSelectImage }) => {
+interface BackStickerSelectorProps {
+  onSelectSticker: (sticker: string) => void;
+  onSelectImage: (uri: string) => void;
+}
+
+const BackStickerSelector = ({ onSelectSticker, onSelectImage }: BackStickerSelectorProps) => {
   const [modalVisible, setModalVisible] = useState(false);
 
   const requestCameraPermission = async () => {
@@ -69,9 +74,9 @@ const BackStickerSelector = ({ onSelectSticker, onSelectImage }) => {
         renderItem={({ item }) => (
           <TouchableOpacity
             style={styles.stickerIcon}
-            onPress={() => onSelectSticker(item)}
+            onPress={() => onSelectSticker(item as keyof typeof stickerImages)}
           >
-            <Image source={stickerImages[item]} style={styles.stickerIconImage} />
+            <Image source={stickerImages[item as keyof typeof stickerImages]} style={styles.stickerIconImage} />
           </TouchableOpacity>
         )}
         contentContainerStyle={styles.stickerList}
@@ -81,7 +86,7 @@ const BackStickerSelector = ({ onSelectSticker, onSelectImage }) => {
           style={styles.imageHeader}
           onPress={() => setModalVisible(true)}
         >
-          <Image source={require("../../assets/icons/qr_gradient_icon.png")} style={styles.imageIcon} />
+          <Image source={require("../../assets/icons/qr_gradient_icon.png")} style={styles.stickerIconImage} />
           <Text style={styles.imageTitle}>사진 추가하기</Text>
         </TouchableOpacity>
       </View>
