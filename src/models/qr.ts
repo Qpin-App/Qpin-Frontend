@@ -5,7 +5,7 @@ export interface QrData {
   sticker: string | null;
   imageUri: string | null;
   phoneNumber: string;
-  comment: string;
+  comment: string | null;
   qrUrl?: any; // 백엔드에서 생성된 QR URL 또는 로컬 이미지
 }
 

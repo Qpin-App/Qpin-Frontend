@@ -27,7 +27,7 @@ const QrCard: React.FC<QrCardProps> = ({ data }) => {
         style={styles.qrComment}
         numberOfLines={1}
         ellipsizeMode="tail"
-      >{data.comment}</Text>
+      >{data.comment || ""}</Text>
     </View>
   );
 };

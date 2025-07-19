@@ -53,7 +53,7 @@ const QrSimpleCard: React.FC<QrSimpleCardProps> = ({
              style={styles.datePickerArrow}
            />
           </View>
-          <Text style={styles.qrContent}>{data.comment}</Text>
+          <Text style={styles.qrContent}>{data.comment || ""}</Text>
         </View>
       </TouchableOpacity>
     );
