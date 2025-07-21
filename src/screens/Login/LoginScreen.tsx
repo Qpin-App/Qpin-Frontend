@@ -1,13 +1,27 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, StatusBar, Dimensions, Image } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import { LoginScreenNavigationProp } from '../../types/navigation';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import KakaoIcon from '../../assets/kakaoIcon.svg';
+import NaverIcon from '../../assets/naverIcon.svg';
+import GoogleIcon from '../../assets/googleIcon.svg';
+import VisiblePasswordIcon from '../../assets/visiblePasswordIcon.svg';
+import QpinLogo from '../../assets/qpinLogo.svg';
 
 const { width, height } = Dimensions.get('window');
 
+const ICONS = {
+  logo: require('../../assets/icons/logo.png'),
+  visiblePassword: require('../../assets/icons/visible_password.png'),
+};
+
 type SocialProvider = '카카오톡' | '네이버' | '구글';
+
+const socialProviders: { name: SocialProvider; Icon: React.FC<any> }[] = [
+  { name: '카카오톡', Icon: KakaoIcon },
+  { name: '네이버', Icon: NaverIcon },
+  { name: '구글', Icon: GoogleIcon },
+];
 
 interface LoginFormData {
   email: string;
@@ -19,11 +33,11 @@ const LoginScreen: React.FC = () => {
   const navigation = useNavigation<LoginScreenNavigationProp>();
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const [passwordVisible, setPasswordVisible] = useState(false);
   const [autoLogin, setAutoLogin] = useState<boolean>(false);
 
   const handleLogin = (): void => {
     const loginData: LoginFormData = { email, password, autoLogin };
-    console.log('로그인 시도:', loginData);
     navigation.navigate('Main');
     // 로그인 로직 구현
   };
@@ -38,11 +52,7 @@ const LoginScreen: React.FC = () => {
         <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
         
         {/* QPIN 로고 */}
-        <Image
-            source={require("../../assets/icons/logo.png")}
-            style={styles.logoContainer}
-        />
-
+        <QpinLogo style={styles.logoContainer} width={130} height={80} />
 
         {/* 입력 폼 */}
         <View style={styles.formContainer}>
@@ -51,7 +61,7 @@ const LoginScreen: React.FC = () => {
             <TextInput
                 style={styles.input}
                 placeholder="아이디(이메일)"
-                placeholderTextColor="#999"
+                placeholderTextColor="#B9B9B9"
                 value={email}
                 onChangeText={setEmail}
                 keyboardType="email-address"
@@ -64,13 +74,16 @@ const LoginScreen: React.FC = () => {
             <TextInput
                 style={styles.input}
                 placeholder="비밀번호"
-                placeholderTextColor="#999"
+                placeholderTextColor="#B9B9B9"
                 value={password}
                 onChangeText={setPassword}
-                secureTextEntry
+                secureTextEntry={!passwordVisible} 
             />
-            <TouchableOpacity style={styles.eyeIcon}>
-                <Text style={styles.eyeIconText}>👁</Text>
+            <TouchableOpacity 
+                style={styles.eyeIcon}
+                onPress={() => setPasswordVisible(prev => !prev)}
+            >
+                <VisiblePasswordIcon width={20} height={20} />
             </TouchableOpacity>
             </View>
 
@@ -80,13 +93,18 @@ const LoginScreen: React.FC = () => {
                 style={[styles.checkbox, autoLogin && styles.checkboxChecked]}
                 onPress={() => setAutoLogin(!autoLogin)}
             >
-                {autoLogin && <Text style={styles.checkmark}>✓</Text>}
+                {autoLogin && <Text style={styles.checkmark}></Text>}
             </TouchableOpacity>
             <Text style={styles.checkboxLabel}>자동 로그인</Text>
             </View>
 
             {/* 로그인 버튼 */}
-            <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+            <TouchableOpacity 
+                style={[
+                    styles.loginButton,
+                    email.length > 0 && password.length > 0 && styles.loginButtonActive
+                ]}
+                onPress={handleLogin}>
                 <Text style={styles.loginButtonText}>로그인</Text>
             </TouchableOpacity>
 
@@ -105,39 +123,19 @@ const LoginScreen: React.FC = () => {
 
             {/* 간편 로그인 */}
             <View style={styles.socialLoginContainer}>
-            <Text style={styles.socialLoginTitle}>간편 로그인</Text>
-            
-            <View style={styles.socialButtonsContainer}>
-                {/* 카카오톡 */}
-                <TouchableOpacity
-                onPress={() => handleSocialLogin('카카오톡')}
-                >
-                    <Image
-                        source={require("../../assets/icons/kakao_logo.png")}
-                        style={styles.socialButton}
-                    />
-                </TouchableOpacity>
-
-                {/* 네이버 */}
-                <TouchableOpacity
-                onPress={() => handleSocialLogin('네이버')}
-                >
-                    <Image
-                        source={require("../../assets/icons/naver_logo.png")}
-                        style={styles.socialButton}
-                    />
-                </TouchableOpacity>
-
-                {/* 구글 */}
-                <TouchableOpacity
-                onPress={() => handleSocialLogin('구글')}
-                >
-                    <Image
-                        source={require("../../assets/icons/google_logo.png")}
-                        style={styles.socialButton}
-                    />
-                </TouchableOpacity>
-            </View>
+                <View style={styles.separatorContainer}>
+                    <View style={styles.line} />
+                    <Text style={styles.socialLoginTitle}>간편 로그인</Text>
+                    <View style={styles.line} />
+                </View>
+               
+                <View style={styles.socialButtonsContainer}>
+                    {socialProviders.map(({ name, Icon }) => (
+                        <TouchableOpacity key={name} onPress={() => handleSocialLogin(name)}>
+                        <Icon width={40} height={40} />
+                        </TouchableOpacity>
+                    ))}
+                </View>
             </View>
         </View>
     </SafeAreaView>
@@ -151,10 +149,8 @@ const styles = StyleSheet.create({
     },
     logoContainer: {
         alignItems: 'center',
-        width: 130,
-        height: 60,
         marginTop: height * 0.1,
-        marginBottom: height * 0.08,
+        marginBottom: height * 0.1,
         marginLeft: 20,
     },
     formContainer: {
@@ -170,7 +166,7 @@ const styles = StyleSheet.create({
         borderBottomColor: '#e0e0e0',
         paddingVertical: 15,
         paddingRight: 40,
-        fontSize: 16,
+        fontSize: 14,
         color: '#333',
     },
     eyeIcon: {
@@ -185,7 +181,7 @@ const styles = StyleSheet.create({
     checkboxContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 30,
+        marginBottom: 100,
         marginTop: 10,
     },
     checkbox: {
@@ -199,8 +195,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     checkboxChecked: {
-        backgroundColor: '#87CEEB',
-        borderColor: '#87CEEB',
+        backgroundColor: '#38B7FF',
+        borderColor: '#38B7FF',
     },
     checkmark: {
         color: '#ffffff',
@@ -219,8 +215,11 @@ const styles = StyleSheet.create({
         paddingBottom: 5,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#38B7FF',
+        backgroundColor: 'rgba(56, 183, 255, 0.5)',
         alignSelf: 'center',
+    },
+    loginButtonActive: {
+        backgroundColor: "#38B7FF",
     },
     loginButtonText: {
         color: '#ffffff',
@@ -230,42 +229,37 @@ const styles = StyleSheet.create({
     linksContainer: {
         flexDirection: 'row',
         justifyContent: 'space-around',
-        marginBottom: 50,
+        marginBottom: 20,
     },
     linkText: {
         fontSize: 14,
-        color: '#666',
+        color: '#999999',
     },
     socialLoginContainer: {
         alignItems: 'center',
     },
+    separatorContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginVertical: 20,
+    },
+    line: {
+        flex: 1,
+        height: 1,
+        backgroundColor: '#DEDEDE',
+    },
     socialLoginTitle: {
         fontSize: 14,
-        color: '#999',
-        marginBottom: 20,
+        color: '#B9B9B9',
+        marginLeft: 20,
+        marginRight: 20,
+        marginBottom: 5,
     },
     socialButtonsContainer: {
         flexDirection: 'row',
         justifyContent: 'center',
         gap: 40,
-    },
-    socialButton: {
-        width: 40,
-        height: 40,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    socialIconContainer: {
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    socialIcon: {
-        fontSize: 20,
-    },
-    socialIconNaver: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: '#ffffff',
+        marginTop: 20,
     },
 });
 
