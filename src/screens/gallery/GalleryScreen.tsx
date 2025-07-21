@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 import CommonModal from '../../components/CommonModal';
 import TrashIcon from '../../assets/icons/trashIcon.svg';
+import CustomStackHeader from "../../components/CustomStackHeader";
 
 // 더미 데이터
 const galleryData = [
@@ -18,6 +19,10 @@ const galleryData = [
     date: '2024.06.24',
   }
 ];
+
+const handleSave = () => {
+  return null;
+};
 
 const GalleryScreen = () => {
   const [selected, setSelected] = useState(false);
@@ -41,7 +46,7 @@ const GalleryScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.pageTitle}>갤러리</Text>
+        <CustomStackHeader title="갤러리" onClick={handleSave} isSave={true} />
         {!selected ? (
           <TouchableOpacity onPress={() => setSelected(true)}>
             <Text style={styles.selectButton}>선택</Text>

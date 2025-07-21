@@ -3,6 +3,7 @@ import { FlatList, View, Text, TouchableOpacity, StyleSheet } from 'react-native
 
 import ScrapCardItem from './ScrapCardItem';
 import ReturnIcon from '../../assets/icons/return.svg';
+import CustomStackHeader from "../../components/CustomStackHeader";
 
 interface ParkingData {
   id: string;
@@ -12,6 +13,10 @@ interface ParkingData {
   image: string;
   isDone: boolean;
 }
+
+const handleSave = () => {
+  return null;
+};
 
 const initialData: ParkingData[] = [
   {
@@ -45,6 +50,7 @@ const ScrapScreen = () => {
   return (
     <View>
       <View style={styles.header}>
+        <CustomStackHeader title="스크랩한 주차장" onClick={handleSave} isSave={true} />
         <TouchableOpacity style={styles.backButton}>
           <ReturnIcon width={12} height={20} />
         </TouchableOpacity>
