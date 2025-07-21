@@ -1,41 +1,49 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList, Dimensions, ImageBackground } from "react-native";
+import React from "react";
+import { View, Text, TextInput, StyleSheet, Image, ImageBackground, Dimensions } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
-import QRCode from 'react-native-qrcode-svg';
-
-type QrDetailCardContentProps = {
-  stickerImage: string | null;
-  phoneNumberInput: string | null;
-  tempPhoneNumber: string;
-  setTempPhoneNumber: (value: string) => void;
-  handlePhoneNumberChange: () => void;
-  comment: string | null;
-  isEdit: boolean;
-}
 
 const screenWidth = Dimensions.get("window").width;
 const rem = screenWidth / 24;
-const cardSize = screenWidth - rem * 5;
 
-const QrDetailCardContent = ({
+interface QrDetailCardContentProps {
+  stickerImage: any;
+  qrUrl?: string | null;
+  phoneNumberInput?: string;
+  tempPhoneNumber?: string;
+  setTempPhoneNumber?: (value: string) => void;
+  handlePhoneNumberChange?: () => void;
+  comment?: string;
+  setComment?: (value: string) => void;
+  isEdit: boolean;
+}
+
+const QrDetailCardContent: React.FC<QrDetailCardContentProps> = ({
   stickerImage,
+  qrUrl,
   phoneNumberInput,
   tempPhoneNumber,
   setTempPhoneNumber,
   handlePhoneNumberChange,
   comment,
+  setComment,
   isEdit
-}: QrDetailCardContentProps) => {
+}) => {
   return (
     <View style={styles.row}>
-      <ImageBackground
-        source={stickerImage || undefined}
-        style={styles.stickerBackground}
-        imageStyle={{ resizeMode: "contain" }}
-      />
+      {stickerImage && (
+        <ImageBackground
+          source={stickerImage}
+          style={styles.stickerBackground}
+          imageStyle={{ resizeMode: "contain" }}
+        />
+      )}
       <View style={styles.inputContainer}>
-        {phoneNumberInput ? (
-          <QRCode value={phoneNumberInput} size={rem * 5} />
+        {qrUrl ? (
+          <Image 
+            source={typeof qrUrl === 'string' ? { uri: qrUrl } : qrUrl}
+            style={styles.qrImage}
+            resizeMode="contain"
+          />
         ) : (
           <View style={styles.qrBox} />
         )}
@@ -56,8 +64,9 @@ const QrDetailCardContent = ({
             <Icon name="pencil-outline" size={18} color="#B9B9B9" />
             <TextInput
               style={styles.input}
-              value={comment}
+              value={comment || ""}
               placeholder="주차 메모 작성하기"
+              onChangeText={text => setComment && setComment(text)}
               editable={isEdit}
             />
           </View>
@@ -74,10 +83,10 @@ const styles = StyleSheet.create({
   },
   stickerBackground: {
     position: "absolute",
-    top: cardSize/3,
-    left: cardSize/5,
-    width: cardSize/2,
-    height: cardSize/2,
+    top: screenWidth/3,
+    left: screenWidth/5,
+    width: screenWidth/2,
+    height: screenWidth/2,
   },
   inputContainer: {
     width: "100%",
@@ -94,6 +103,11 @@ const styles = StyleSheet.create({
     height: rem * 5,
     borderWidth: 1,
     borderColor: "#E0E0E0",
+    borderRadius: 5,
+  },
+  qrImage: {
+    width: rem * 5,
+    height: rem * 5,
     borderRadius: 5,
   },
   inputBox: {
