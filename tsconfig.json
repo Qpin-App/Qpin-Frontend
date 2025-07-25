@@ -2,6 +2,11 @@
   "extends": "@react-native/typescript-config/tsconfig.json",
   "include": ["src", "declarations.d.ts"],
   "compilerOptions": {
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "types": ["@types/react", "@types/react-native"],
+    "baseUrl": "./",
+    "paths": {
+      "@env": ["env.d.ts"]
+    }
   }
 }

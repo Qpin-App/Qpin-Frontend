@@ -13,7 +13,7 @@ import SearchScreen from "./src/screens/Search/SearchScreen";
 import InsuranceScreen from "./src/screens/Insurance/InsuranceScreen";
 import CustomHeader from './src/components/CustomHeader';
 import GalleryScreen from "./src/screens/gallery/GalleryScreen";
-import ScrapScreen from "./src/screens/scrap/ScrapScreen";
+import ScrapScreen from "./src/screens/Scrap/ScrapScreen";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -65,16 +65,21 @@ const QrStack = () => (
     <Stack.Screen
       name="gallery"
       component={GalleryScreen}
-      options={{ headerShown: false}}
+      options={{ headerShown: true}}
     />
     <Stack.Screen
       name="scrap"
       component={ScrapScreen}
-      options={{ headerShown: false}}
+      options={{ headerShown: true}}
     />
     <Stack.Screen
       name="parking"
       component={ParkingScreen}
+      options={{ headerShown: true}}
+    />
+    <Stack.Screen
+      name="search"
+      component={SearchScreen}
       options={{ headerShown: true}}
     />
   </Stack.Navigator>
