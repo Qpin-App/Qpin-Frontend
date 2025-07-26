@@ -13,6 +13,8 @@ import SearchScreen from "./src/screens/Search/SearchScreen";
 import InsuranceScreen from "./src/screens/Insurance/InsuranceScreen";
 import LoginScreen from "./src/screens/Login/LoginScreen";
 import CustomHeader from './src/components/CustomHeader';
+import GalleryScreen from "./src/screens/gallery/GalleryScreen";
+import ScrapScreen from "./src/screens/scrap/ScrapScreen";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -61,6 +63,21 @@ const QrStack = () => (
       name="CompleteScreen"
       component={CompleteScreen}
       options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="gallery"
+      component={GalleryScreen}
+      options={{ headerShown: false}}
+    />
+    <Stack.Screen
+      name="scrap"
+      component={ScrapScreen}
+      options={{ headerShown: false}}
+    />
+    <Stack.Screen
+      name="parking"
+      component={ParkingScreen}
+      options={{ headerShown: true}}
     />
   </Stack.Navigator>
 );
