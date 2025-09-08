@@ -66,16 +66,6 @@ const QrStack = () => (
       options={{ headerShown: false }}
     />
     <Stack.Screen
-      name="gallery"
-      component={GalleryScreen}
-      options={{ headerShown: true}}
-    />
-        <Stack.Screen
-      name="gallery"
-      component={CameraScreen}
-      options={{ headerShown: false }}
-    />
-    <Stack.Screen
       name="scrap"
       component={ScrapScreen}
       options={{ headerShown: true}}
@@ -85,10 +75,25 @@ const QrStack = () => (
       component={ParkingScreen}
       options={{ headerShown: true}}
     />
+  </Stack.Navigator>
+);
+
+const SearchStack = () => (
+  <Stack.Navigator>
     <Stack.Screen
-      name="search"
+      name="SearchScreen"
       component={SearchScreen}
-      options={{ headerShown: true}}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="CameraScreen"
+      component={CameraScreen}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="GalleryScreen"
+      component={GalleryScreen}
+      options={{ headerShown: false }}
     />
   </Stack.Navigator>
 );
@@ -169,7 +174,7 @@ const MainTabNavigator = () => (
     />
     <Tab.Screen
       name="Search"
-      component={SearchScreen}
+      component={SearchStack}
       options={{
         tabBarIcon: ({ focused, color, size }) => (
           <Image
