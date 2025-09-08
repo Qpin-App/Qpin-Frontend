@@ -51,10 +51,6 @@ const ScrapScreen = () => {
     <View>
       <View style={styles.header}>
         <CustomStackHeader title="스크랩한 주차장" onClick={handleSave} isSave={true} />
-        <TouchableOpacity style={styles.backButton}>
-          <ReturnIcon width={12} height={20} />
-        </TouchableOpacity>
-        <Text style={styles.title}>타이틀</Text>
       </View>
 
       <FlatList

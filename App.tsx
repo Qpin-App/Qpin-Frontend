@@ -13,8 +13,9 @@ import SearchScreen from "./src/screens/Search/SearchScreen";
 import InsuranceScreen from "./src/screens/Insurance/InsuranceScreen";
 import LoginScreen from "./src/screens/Login/LoginScreen";
 import CustomHeader from './src/components/CustomHeader';
-import GalleryScreen from "./src/screens/gallery/GalleryScreen";
-import ScrapScreen from "./src/screens/scrap/ScrapScreen";
+import GalleryScreen from "./src/screens/Search/GalleryScreen";
+import CameraScreen from "./src/screens/Search/CameraScreen";
+import ScrapScreen from "./src/screens/Scrap/ScrapScreen";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -65,19 +66,34 @@ const QrStack = () => (
       options={{ headerShown: false }}
     />
     <Stack.Screen
-      name="gallery"
-      component={GalleryScreen}
-      options={{ headerShown: false}}
-    />
-    <Stack.Screen
       name="scrap"
       component={ScrapScreen}
-      options={{ headerShown: false}}
+      options={{ headerShown: true}}
     />
     <Stack.Screen
       name="parking"
       component={ParkingScreen}
       options={{ headerShown: true}}
+    />
+  </Stack.Navigator>
+);
+
+const SearchStack = () => (
+  <Stack.Navigator>
+    <Stack.Screen
+      name="SearchScreen"
+      component={SearchScreen}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="CameraScreen"
+      component={CameraScreen}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="GalleryScreen"
+      component={GalleryScreen}
+      options={{ headerShown: false }}
     />
   </Stack.Navigator>
 );
@@ -158,7 +174,7 @@ const MainTabNavigator = () => (
     />
     <Tab.Screen
       name="Search"
-      component={SearchScreen}
+      component={SearchStack}
       options={{
         tabBarIcon: ({ focused, color, size }) => (
           <Image
