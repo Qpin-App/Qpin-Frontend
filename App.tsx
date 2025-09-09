@@ -26,7 +26,7 @@ const HomeStack = () => (
            name="Home"
            component={HomeScreen}
             options={{
-                header: () => <CustomHeader title="Home Screen" />,
+                header: () => <CustomHeader title="" />,
             }}
         />
     </Stack.Navigator>
@@ -95,8 +95,28 @@ const SearchStack = () => (
       component={GalleryScreen}
       options={{ headerShown: false }}
     />
+    <Stack.Screen
+      name="ScrapScreen"
+      component={ScrapScreen}
+      options={{ headerShown: false }}
+    />
   </Stack.Navigator>
 );
+
+const ParkingStack = () => (
+  <Stack.Navigator>
+    <Stack.Screen
+      name="ParkingScreen"
+      component={ParkingScreen}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="ScrapScreen"
+      component={ScrapScreen}
+      options={{ headerShown: false }}
+    />
+  </Stack.Navigator>
+)
 
 // 메인 탭 네비게이터
 const MainTabNavigator = () => (
@@ -154,7 +174,7 @@ const MainTabNavigator = () => (
     />
     <Tab.Screen
       name="Parking"
-      component={ParkingScreen}
+      component={ParkingStack}
       options={{
         tabBarIcon: ({ focused, color, size }) => (
           <Image

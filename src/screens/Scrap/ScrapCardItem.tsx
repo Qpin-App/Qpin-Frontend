@@ -1,101 +1,94 @@
 import React from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 
 import SaveScrapIcon from '../../assets/icons/saveScrap.svg';
 import SelectScrapIcon from '../../assets/icons/selectScrap.svg';
 import NonScrapIcon from '../../assets/icons/nonScrap.svg';
 
-interface ParkingCardProps {
+interface ScrapCardItemProps {
   id: string;
   name: string;
-  address: string;
-  distance: string;
+  address?: string;
+  distance?: string;
   image: string;
   isDone: boolean;
   selected: boolean;
   onToggleSelect: () => void;
+  deleteMode: boolean;
 }
 
 const ScrapCardItem = ({
   name,
-  address,
   distance,
   image,
   isDone,
   selected,
   onToggleSelect,
-}: ParkingCardProps) => {
+  deleteMode,
+}: ScrapCardItemProps) => {
   const renderScrapIcon = () => {
-    if (isDone) return <SaveScrapIcon width={20} height={20} />;
-    if (selected) return <SelectScrapIcon width={20} height={20} />;
-    return <NonScrapIcon width={20} height={20} />;
+    if (isDone) return <SaveScrapIcon width={24} height={24} />;
+    if (selected) return <SelectScrapIcon width={24} height={24} />;
+    return <NonScrapIcon width={24} height={24} />;
   };
 
   return (
-    <View style={styles.container}>
-      {/* 헤더는 리스트 상단에서 따로 처리할 수 있음 */}
-
-      {/* 선택 텍스트 */}
-      <TouchableOpacity onPress={onToggleSelect}>
-        <Text style={styles.selectText}>
-          {selected ? '삭제' : '선택'}
-        </Text>
-      </TouchableOpacity>
-
-      {/* 스크랩 버튼 */}
-      <TouchableOpacity style={styles.scrapButton} onPress={onToggleSelect}>
-        {renderScrapIcon()}
-      </TouchableOpacity>
-
-      {/* 이미지 */}
+    <TouchableOpacity
+      style={[
+        styles.container,
+        deleteMode && selected && styles.selectedContainer,
+      ]}
+      activeOpacity={0.8}
+      onPress={deleteMode ? onToggleSelect : undefined}
+    >
       <Image source={{ uri: image }} style={styles.image} />
-
-      {/* 이름 및 주소 */}
-      <Text style={styles.name}>{name}</Text>
-      <Text style={styles.address}>{distance} · {address}</Text>
-    </View>
+      <View style={styles.info}>
+        <Text style={styles.name} numberOfLines={1}>{name}</Text>
+        {distance && <Text style={styles.distance}>{distance}</Text>}
+      </View>
+      <View style={styles.icon}>{renderScrapIcon()}</View>
+    </TouchableOpacity>
   );
 };
 
 export default ScrapCardItem;
 
+const CARD_WIDTH = (Dimensions.get('window').width - 16 * 2 - 16) / 3; // 3열 + padding + margin
+
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
-    alignItems: 'center',
-    borderBottomWidth: 1,
-    borderColor: '#ddd',
+    width: CARD_WIDTH,
+    marginBottom: 16,
+    borderRadius: 8,
+    backgroundColor: '#fff',
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: '#eee',
   },
-  selectText: {
-    color: '#999',
-    textAlign: 'center',
-    fontFamily: 'Pretendard',
-    fontSize: 12,
-    fontWeight: '400',
-    marginVertical: 8,
-  },
-  scrapButton: {
-    width: 20,
-    height: 20,
-    marginBottom: 12,
+  selectedContainer: {
+    borderColor: '#38B7FF',
+    backgroundColor: '#E8F4FF',
   },
   image: {
-    width: 150,
-    height: 100,
-    borderRadius: 3,
-    backgroundColor: 'lightgray',
-    marginBottom: 8,
+    width: '100%',
+    height: CARD_WIDTH,
+    borderRadius: 8,
+  },
+  info: {
+    padding: 6,
   },
   name: {
-    color: '#000',
-    fontFamily: 'Pretendard',
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  address: {
-    color: '#000',
-    fontFamily: 'Pretendard',
     fontSize: 12,
-    fontWeight: '400',
+    fontWeight: '600',
+    color: '#000',
+  },
+  distance: {
+    fontSize: 10,
+    color: '#666',
+  },
+  icon: {
+    position: 'absolute',
+    top: 6,
+    right: 6,
   },
 });

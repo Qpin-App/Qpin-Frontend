@@ -56,7 +56,7 @@ const GalleryScreen = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      <View>
         <SearchStackHeader
           title="갤러리"
           selected={selected}

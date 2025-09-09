@@ -8,9 +8,23 @@ import {
 } from 'react-native';
 import { Camera, useCameraDevice, useCameraPermission } from 'react-native-vision-camera';
 import { useFocusEffect } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+export type SearchStackParamList = {
+  SearchScreen: undefined;
+  CameraScreen: undefined;
+  GalleryScreen: undefined;
+};
+
+type CameraScreenNavigationProp = NativeStackNavigationProp<
+  SearchStackParamList,
+  "CameraScreen"
+>;
 
 export default function CameraScreen() {
   const camera = useRef<Camera>(null);
+  const navigation = useNavigation<CameraScreenNavigationProp>();
 
   // 뒤쪽 카메라 사용
   const device = useCameraDevice('back');
@@ -42,7 +56,14 @@ export default function CameraScreen() {
       if (cam) {
         const photo = await cam.takePhoto({ flash });
         console.log('Photo path:', photo.path);
-        Alert.alert('사진 촬영', '사진이 촬영되었습니다!');
+        Alert.alert('사진 촬영', '사진이 촬영되었습니다!',
+          [
+            {
+              text: 'OK',
+              onPress: () => navigation.navigate("SearchScreen"),
+            },
+          ]
+        ,);
       }
     } catch (error) {
       console.error(error);
