@@ -30,125 +30,248 @@ const SearchScreen = () => {
   const navigation = useNavigation<NavigationProp>();
 
   // 카카오맵 HTML (JavaScript API 사용)
-  const kakaoMapHTML = `
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <meta charset="utf-8">
-        <title>카카오맵</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-        <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=f503062894afc90f6ea7384761797a32"></script>
-        <style>
-            html, body { 
-                margin: 0; 
-                padding: 0; 
-                width: 100%; 
-                height: 100%; 
-                overflow: hidden;
-            }
-            #map { 
-                width: 100%; 
-                height: 100%; 
-            }
-        </style>
-    </head>
-    <body>
-        <div id="map"></div>
-        <script>
-            // 지도 초기화
-            var container = document.getElementById('map');
-            var options = {
-                center: new kakao.maps.LatLng(37.5665, 126.9780), // 서울시청
-                level: 3 // 확대 레벨
-            };
-            var map = new kakao.maps.Map(container, options);
+//   const kakaoMapHTML = `
+//     <!DOCTYPE html>
+//     <html>
+//     <head>
+//         <meta charset="utf-8">
+//         <title>카카오맵</title>
+//         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+//         <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=f503062894afc90f6ea7384761797a32"></script>
+//         <style>
+//             html, body { 
+//                 margin: 0; 
+//                 padding: 0; 
+//                 width: 100%; 
+//                 height: 100%; 
+//                 overflow: hidden;
+//             }
+//             #map { 
+//                 width: 100%; 
+//                 height: 100%; 
+//             }
+//         </style>
+//     </head>
+//     <body>
+//         <div id="map"></div>
+//         <script>
+//             // 지도 초기화
+//             var container = document.getElementById('map');
+//             var options = {
+//                 center: new kakao.maps.LatLng(37.5665, 126.9780), // 서울시청
+//                 level: 3 // 확대 레벨
+//             };
+//             var map = new kakao.maps.Map(container, options);
             
-            // 마커 추가
-            var markers = [
-                {
-                    position: new kakao.maps.LatLng(37.5665, 126.9780),
-                    title: '서울시청'
-                },
-                {
-                    position: new kakao.maps.LatLng(37.5651, 126.9895),
-                    title: '명동역'
-                }
-            ];
+//             // 마커 추가
+//             var markers = [
+//                 {
+//                     position: new kakao.maps.LatLng(37.5665, 126.9780),
+//                     title: '서울시청'
+//                 },
+//                 {
+//                     position: new kakao.maps.LatLng(37.5651, 126.9895),
+//                     title: '명동역'
+//                 }
+//             ];
             
-            markers.forEach(function(markerInfo) {
-                var marker = new kakao.maps.Marker({
-                    position: markerInfo.position,
-                    title: markerInfo.title
-                });
-                marker.setMap(map);
+//             markers.forEach(function(markerInfo) {
+//                 var marker = new kakao.maps.Marker({
+//                     position: markerInfo.position,
+//                     title: markerInfo.title
+//                 });
+//                 marker.setMap(map);
                 
-                // 마커 클릭 이벤트
-                kakao.maps.event.addListener(marker, 'click', function() {
-                    if (window.ReactNativeWebView) {
-                        window.ReactNativeWebView.postMessage(JSON.stringify({
-                            type: 'MARKER_CLICK',
-                            title: markerInfo.title,
-                            lat: markerInfo.position.getLat(),
-                            lng: markerInfo.position.getLng()
-                        }));
-                    }
-                });
-            });
+//                 // 마커 클릭 이벤트
+//                 kakao.maps.event.addListener(marker, 'click', function() {
+//                     if (window.ReactNativeWebView) {
+//                         window.ReactNativeWebView.postMessage(JSON.stringify({
+//                             type: 'MARKER_CLICK',
+//                             title: markerInfo.title,
+//                             lat: markerInfo.position.getLat(),
+//                             lng: markerInfo.position.getLng()
+//                         }));
+//                     }
+//                 });
+//             });
             
-            // 지도 클릭 이벤트
-            kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
-                var latlng = mouseEvent.latLng;
-                if (window.ReactNativeWebView) {
-                    window.ReactNativeWebView.postMessage(JSON.stringify({
-                        type: 'MAP_CLICK',
-                        lat: latlng.getLat(),
-                        lng: latlng.getLng()
-                    }));
-                }
-            });
+//             // 지도 클릭 이벤트
+//             kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
+//                 var latlng = mouseEvent.latLng;
+//                 if (window.ReactNativeWebView) {
+//                     window.ReactNativeWebView.postMessage(JSON.stringify({
+//                         type: 'MAP_CLICK',
+//                         lat: latlng.getLat(),
+//                         lng: latlng.getLng()
+//                     }));
+//                 }
+//             });
             
-            // 현재 위치로 이동하는 함수
-            window.moveToCurrentLocation = function() {
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(function(position) {
-                        var lat = position.coords.latitude;
-                        var lng = position.coords.longitude;
-                        var moveLatLon = new kakao.maps.LatLng(lat, lng);
-                        map.setCenter(moveLatLon);
+//             // 현재 위치로 이동하는 함수
+//             window.moveToCurrentLocation = function() {
+//                 if (navigator.geolocation) {
+//                     navigator.geolocation.getCurrentPosition(function(position) {
+//                         var lat = position.coords.latitude;
+//                         var lng = position.coords.longitude;
+//                         var moveLatLon = new kakao.maps.LatLng(lat, lng);
+//                         map.setCenter(moveLatLon);
                         
-                        // 현재 위치 마커 추가
-                        var currentMarker = new kakao.maps.Marker({
-                            position: moveLatLon
-                        });
-                        currentMarker.setMap(map);
+//                         // 현재 위치 마커 추가
+//                         var currentMarker = new kakao.maps.Marker({
+//                             position: moveLatLon
+//                         });
+//                         currentMarker.setMap(map);
                         
-                        if (window.ReactNativeWebView) {
-                            window.ReactNativeWebView.postMessage(JSON.stringify({
-                                type: 'LOCATION_FOUND',
-                                lat: lat,
-                                lng: lng
-                            }));
-                        }
-                    });
-                }
-            };
+//                         if (window.ReactNativeWebView) {
+//                             window.ReactNativeWebView.postMessage(JSON.stringify({
+//                                 type: 'LOCATION_FOUND',
+//                                 lat: lat,
+//                                 lng: lng
+//                             }));
+//                         }
+//                     });
+//                 }
+//             };
             
-\            window.addEventListener('message', function(event) {
+// \            window.addEventListener('message', function(event) {
+//               var data = JSON.parse(event.data);
+//               if (data.type === 'GET_CURRENT_LOCATION') {
+//                 window.moveToCurrentLocation();
+//               }
+//               if (data.type === 'LOCATION_FROM_NATIVE') {
+//                 var moveLatLon = new kakao.maps.LatLng(data.lat, data.lng);
+//                 map.setCenter(moveLatLon);
+//                 var currentMarker = new kakao.maps.Marker({ position: moveLatLon });
+//                 currentMarker.setMap(map);
+//               }
+//             });
+//         </script>
+//     </body>
+//     </html>
+//   `;
+
+const googleMapHTML = `
+  <!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <title>Google Map</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+      <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB_hFmpeBIUH60FuYIwGAZFey5d-gBI6Ws"></script>
+      <style>
+          html, body { 
+              margin: 0; 
+              padding: 0; 
+              width: 100%; 
+              height: 100%; 
+              overflow: hidden;
+          }
+          #map { 
+              width: 100%; 
+              height: 100%; 
+          }
+      </style>
+  </head>
+  <body>
+      <div id="map"></div>
+      <script>
+          var map;
+          function initMap() {
+              // 지도 초기화
+              var center = { lat: 37.5665, lng: 126.9780 }; // 서울시청
+              map = new google.maps.Map(document.getElementById('map'), {
+                  center: center,
+                  zoom: 15
+              });
+
+              // 마커 추가
+              var markers = [
+                  { position: { lat: 37.5665, lng: 126.9780 }, title: '서울시청' },
+                  { position: { lat: 37.5651, lng: 126.9895 }, title: '명동역' }
+              ];
+
+              markers.forEach(function(markerInfo) {
+                  var marker = new google.maps.Marker({
+                      position: markerInfo.position,
+                      map: map,
+                      title: markerInfo.title
+                  });
+
+                  // 마커 클릭 이벤트
+                  marker.addListener('click', function() {
+                      if (window.ReactNativeWebView) {
+                          window.ReactNativeWebView.postMessage(JSON.stringify({
+                              type: 'MARKER_CLICK',
+                              title: markerInfo.title,
+                              lat: markerInfo.position.lat,
+                              lng: markerInfo.position.lng
+                          }));
+                      }
+                  });
+              });
+
+              // 지도 클릭 이벤트
+              map.addListener('click', function(event) {
+                  var lat = event.latLng.lat();
+                  var lng = event.latLng.lng();
+                  if (window.ReactNativeWebView) {
+                      window.ReactNativeWebView.postMessage(JSON.stringify({
+                          type: 'MAP_CLICK',
+                          lat: lat,
+                          lng: lng
+                      }));
+                  }
+              });
+          }
+
+          // 현재 위치로 이동하는 함수
+          window.moveToCurrentLocation = function() {
+              if (navigator.geolocation) {
+                  navigator.geolocation.getCurrentPosition(function(position) {
+                      var lat = position.coords.latitude;
+                      var lng = position.coords.longitude;
+                      var moveLatLon = { lat: lat, lng: lng };
+                      map.setCenter(moveLatLon);
+
+                      var currentMarker = new google.maps.Marker({
+                          position: moveLatLon,
+                          map: map
+                      });
+
+                      if (window.ReactNativeWebView) {
+                          window.ReactNativeWebView.postMessage(JSON.stringify({
+                              type: 'LOCATION_FOUND',
+                              lat: lat,
+                              lng: lng
+                          }));
+                      }
+                  });
+              }
+          };
+
+          // RN → Web 통신 처리
+          window.addEventListener('message', function(event) {
               var data = JSON.parse(event.data);
               if (data.type === 'GET_CURRENT_LOCATION') {
-                window.moveToCurrentLocation();
+                  window.moveToCurrentLocation();
               }
               if (data.type === 'LOCATION_FROM_NATIVE') {
-                var moveLatLon = new kakao.maps.LatLng(data.lat, data.lng);
-                map.setCenter(moveLatLon);
-                var currentMarker = new kakao.maps.Marker({ position: moveLatLon });
-                currentMarker.setMap(map);
+                  var moveLatLon = { lat: data.lat, lng: data.lng };
+                  map.setCenter(moveLatLon);
+                  var currentMarker = new google.maps.Marker({ 
+                      position: moveLatLon, 
+                      map: map 
+                  });
               }
-            });
-        </script>
-    </body>
-    </html>
-  `;
+          });
+
+          // 초기화 실행
+          window.onload = initMap;
+      </script>
+  </body>
+  </html>
+`;
+
 
   // 타입 정의
   type WebViewMessageEvent = {
@@ -223,7 +346,7 @@ const SearchScreen = () => {
       <WebView
         ref={webViewRef}
         style={styles.map}
-        source={{ html: kakaoMapHTML }}
+        source={{ html: googleMapHTML }}
         onMessage={handleWebViewMessage}
         javaScriptEnabled={true}
         domStorageEnabled={true}

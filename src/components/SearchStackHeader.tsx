@@ -55,10 +55,11 @@ const CustomStackHeader = ({
 const styles = StyleSheet.create({
   header: {
     width: "100%",
+    height: 100,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 10,
+    padding: 20,
   },
   title: { fontSize: 18, fontWeight: "600" },
   selectText: { color: "#999999", fontSize: 12 },
