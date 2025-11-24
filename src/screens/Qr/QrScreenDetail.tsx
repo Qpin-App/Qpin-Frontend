@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Button, TouchableOpacity, Dimensions, StyleSheet } from "react-native";
+import { View, Text, Button, TouchableOpacity, Dimensions, StyleSheet, Alert } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import CustomStackHeader from "../../components/CustomStackHeader";
 import CommonModal from "../../components/CommonModal";
 import QrCardDetail from "./QrCardDetail";
 import { NavigationProp } from "@react-navigation/native";
+import { deleteQrs } from "../../utils/qrService";
 
 const screenWidth = Dimensions.get("window").width;
 const rem = screenWidth / 24;
@@ -30,13 +31,20 @@ const QrScreenDetail = ({navigation}: QrScreenDetailProps) => {
   const route = useRoute();
   const { id, backgroundColor, gradientColor, sticker, imageUri, phoneNumber, comment, qrUrl } = route.params as RouteParams;
 
-  const handleDeleteQr = () => {
-    setModalVisible(false);
-    navigation.navigate("QrScreen", {});
+  const handleDeleteQr = async () => {
+    try {
+      setModalVisible(false);
+      await deleteQrs([id]);
+      navigation.navigate("QrScreen", {});
+    } catch (error) {
+      console.error("QR 삭제 실패:", error);
+      Alert.alert("오류", "QR 카드 삭제에 실패했습니다. 다시 시도해주세요.");
+    }
   }
 
   const handlePressEdit = () => {
     navigation.navigate("QrScreenEditor", {
+     id,
      backgroundColor,
      gradientColor,
      sticker,
