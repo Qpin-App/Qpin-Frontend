@@ -1,13 +1,13 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, FlatList, Dimensions, TouchableWithoutFeedback } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, FlatList, Dimensions, TouchableWithoutFeedback, Alert } from "react-native";
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from "@react-navigation/stack";
 import CustomStackHeader from "../../components/CustomStackHeader";
 import QrCardDetail from "./QrCardDetail";
 import BackColorSelector from "./BackColorSelector";
 import BackStickerSelector from "./BackStickerSelector";
-import Icon from "react-native-vector-icons/Ionicons";
-import { QrData, qrMockData } from "../../models/qr";
+import { QrData } from "../../models/qr";
+import { createQr, updateQr } from "../../utils/qrService";
 
 // 네비게이션 파라미터 타입 정의
 type RootStackParamList = {
@@ -19,10 +19,41 @@ type RootStackParamList = {
 
 type NavigationProp = StackNavigationProp<RootStackParamList>;
 
+// HEX 색상을 백엔드 Enum으로 매핑
+const mapColorToEnum = (hexColor: string): string => {
+  const colorMap: { [key: string]: string } = {
+    "#EF8582": "RED",
+    "#F7CCA5": "ORANGE",
+    "#FCF2B8": "YELLOW",
+    "#C0FCBE": "GREEN",
+    "#B5E1FC": "BLUE",
+    "#9C98F8": "PURPLE",
+  };
+
+  return colorMap[hexColor.toUpperCase()] || "BLUE";
+};
+
+// 스티커명을 백엔드 Enum으로 매핑
+const mapStickerToEnum = (sticker: string | null): string | null => {
+  if (!sticker || sticker === "") return null;
+
+  const stickerMap: { [key: string]: string } = {
+    "star": "STAR",
+    "heart": "HEART",
+    "cherry": "CHERRY",
+    "thumb": "THUMB",
+    "car": "CAR",
+    "phone": "PHONE",
+  };
+
+  return stickerMap[sticker.toLowerCase()] || sticker.toUpperCase();
+};
+
 const QrScreenEditor: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
   const route = useRoute();
   const params = route.params as {
+    id?: string | number;
     backgroundColor?: string;
     gradientColor?: string;
     sticker?: string | null;
@@ -32,7 +63,10 @@ const QrScreenEditor: React.FC = () => {
     qrUrl?: string;
     isEdit?: boolean;
   };
-  const { backgroundColor, gradientColor, sticker, imageUri, phoneNumber, comment, qrUrl, isEdit } = params;
+  const { id, backgroundColor, gradientColor, sticker, imageUri, phoneNumber, comment, qrUrl, isEdit } = params;
+
+  // id가 있으면 수정 모드, 없으면 생성 모드
+  const isUpdateMode = !!id;
 
   const [activeTab, setActiveTab] = useState<string>("배경색");
   const [selectedColor, setSelectedColor] = useState<string>(backgroundColor || "#F8F8F8");
@@ -43,17 +77,39 @@ const QrScreenEditor: React.FC = () => {
   const [currentComment, setCurrentComment] = useState<string | null>(comment || null);
   const [currentQrUrl, setCurrentQrUrl] = useState<string | undefined>(qrUrl);
 
-  const handleSave = () => {
-    const qrData: Partial<QrData> = {
-      backgroundColor: selectedColor,
-      gradientColor: selectedGradientColor,
-      sticker: selectedSticker,
-      imageUri: selectedImage,
-      phoneNumber: currentPhoneNumber || "",
-      comment: currentComment || "",
-      qrUrl: currentQrUrl,
-    };
-    navigation.navigate("CompleteScreen", qrData);
+  const handleSave = async () => {
+    try {
+      // phoneNumber가 필수값이므로 체크
+      if (!currentPhoneNumber) {
+        Alert.alert("오류", "전화번호를 입력해주세요.");
+        return;
+      }
+
+      // API 요청 데이터 준비 (백엔드 형식에 맞게)
+      const requestData = {
+        memberId: 1, // TODO: 실제 memberId로 변경 필요
+        safePhoneNum: currentPhoneNumber, // TODO: 안심번호 선택 로직 필요
+        phoneNum: currentPhoneNumber,
+        memo: currentComment || null,
+        myColor: mapColorToEnum(selectedColor),
+        sticker: mapStickerToEnum(selectedSticker),
+        gradation: selectedGradientColor,
+        backgroundPicture: selectedImage || null,
+      };
+
+      if (isUpdateMode && id) {
+        // 수정 모드: update API 호출
+        await updateQr(id, requestData);
+        navigation.navigate("QrScreen");
+      } else {
+        // 생성 모드: create API 호출
+        await createQr(requestData);
+        navigation.navigate("QrScreen");
+      }
+    } catch (error) {
+      console.error(isUpdateMode ? "QR 수정 실패:" : "QR 생성 실패:", error);
+      Alert.alert("오류", `QR ${isUpdateMode ? "수정" : "생성"}에 실패했습니다. 다시 시도해주세요.`);
+    }
   };
 
   const handleCommentChange = (value: string) => {
@@ -66,7 +122,7 @@ const QrScreenEditor: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <CustomStackHeader title="생성하기" onClick={handleSave} isSave={true} />
+      <CustomStackHeader title={isUpdateMode ? "수정하기" : "생성하기"} onClick={handleSave} isSave={true} />
       <QrCardDetail
         backgroundColor={selectedColor}
         gradientColor={selectedGradientColor}

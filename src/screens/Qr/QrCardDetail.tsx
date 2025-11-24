@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { View, StyleSheet, Dimensions, ImageBackground } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import QrCardDetailContent from "./QrCardDetailContent";
+import { phoneNumberMock } from "../../models/qr";
+import QRCode from "react-native-qrcode-svg";
 
 const stickerImagesSrc: { [key: string]: any } = {
   star: require("../../assets/icons/star_icon.png"),
@@ -46,6 +48,8 @@ const QrDetailCard: React.FC<QrDetailCardProps> = ({
   const [pictureImage, setPictureImage] = useState<string | null>(null);
   const [tempPhoneNumber, setTempPhoneNumber] = useState<string | null>(phoneNumber);
   const [tempComment, setTempComment] = useState<string | null>(comment);
+  const [generatedQrUrl, setGeneratedQrUrl] = useState<string | undefined>(qrUrl);
+  const qrRef = useRef<any>(null);
 
   useEffect(() => {
     if (sticker && stickerImagesSrc[sticker]) {
@@ -71,11 +75,22 @@ const QrDetailCard: React.FC<QrDetailCardProps> = ({
     setTempPhoneNumber(phoneNumber);
   }, [phoneNumber]);
 
-  const handlePhoneNumberChange = () => {
+  // 전화번호가 변경되면 QR 코드 생성
+  useEffect(() => {
+    if (tempPhoneNumber && qrRef.current) {
+      setTimeout(() => {
+        qrRef.current.toDataURL((dataURL: string) => {
+          console.log('QR generated for:', tempPhoneNumber);
+          setGeneratedQrUrl(`data:image/png;base64,${dataURL}`);
+        });
+      }, 100);
+    }
+
+    // 부모 컴포넌트에 전화번호 변경 알림
     if (onPhoneNumberChange && tempPhoneNumber) {
       onPhoneNumberChange(tempPhoneNumber);
     }
-  };
+  }, [tempPhoneNumber, onPhoneNumberChange]);
 
   const handleCommentChange = (value: string) => {
     setTempComment(value);
@@ -86,6 +101,17 @@ const QrDetailCard: React.FC<QrDetailCardProps> = ({
 
   return (
     <>
+      {/* 숨겨진 QR 코드 생성기 */}
+      {tempPhoneNumber && (
+        <View style={{ position: 'absolute', left: -1000 }}>
+          <QRCode
+            value={tempPhoneNumber}
+            size={200}
+            getRef={(ref) => (qrRef.current = ref)}
+          />
+        </View>
+      )}
+
       {pictureImage ? (
         <ImageBackground
           source={{ uri: String(pictureImage) }}
@@ -94,13 +120,13 @@ const QrDetailCard: React.FC<QrDetailCardProps> = ({
         >
           <QrCardDetailContent
             stickerImage={stickerImage}
-            qrUrl={qrUrl}
+            qrUrl={generatedQrUrl || qrUrl}
             tempPhoneNumber={tempPhoneNumber || ""}
-            setTempPhoneNumber={setTempPhoneNumber}
-            handlePhoneNumberChange={handlePhoneNumberChange}
+            setTempPhoneNumber={(value: string) => setTempPhoneNumber(value)}
             comment={tempComment || ""}
             setComment={handleCommentChange}
             isEdit={isEdit}
+            phoneNumberList={phoneNumberMock}
           />
         </ImageBackground>
       ) : (
@@ -112,13 +138,13 @@ const QrDetailCard: React.FC<QrDetailCardProps> = ({
         >
           <QrCardDetailContent
             stickerImage={stickerImage}
-            qrUrl={qrUrl}
+            qrUrl={generatedQrUrl || qrUrl}
             tempPhoneNumber={tempPhoneNumber || ""}
-            setTempPhoneNumber={setTempPhoneNumber}
-            handlePhoneNumberChange={handlePhoneNumberChange}
+            setTempPhoneNumber={(value: string) => setTempPhoneNumber(value)}
             comment={tempComment || ""}
             setComment={handleCommentChange}
             isEdit={isEdit}
+            phoneNumberList={phoneNumberMock}
           />
         </LinearGradient>
       )}
@@ -129,7 +155,7 @@ const QrDetailCard: React.FC<QrDetailCardProps> = ({
 const styles = StyleSheet.create({
   card: {
     width: cardSize,
-    height: cardSize,
+    height: cardSize / 1.2,
     padding: 15,
     borderRadius: 10,
   },

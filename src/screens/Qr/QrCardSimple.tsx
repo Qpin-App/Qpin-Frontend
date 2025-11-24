@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Image, ImageBackground } from
 import { useNavigation } from "@react-navigation/native";
 import type { StackNavigationProp } from "@react-navigation/stack";
 import Icon from "react-native-vector-icons/FontAwesome";
+import LinearGradient from "react-native-linear-gradient";
 import type { QrData } from "../../models/qr";
 
 interface QrSimpleCardProps {
@@ -62,39 +63,78 @@ const QrSimpleCard: React.FC<QrSimpleCardProps> = ({
   return (
     <TouchableOpacity onPress={handlePressDetail}>
       <View style={styles.container}>
-        <ImageBackground
-          source={
-            data.imageUri
-              ? { uri: String(data.imageUri) }
-              : require("../../assets/icons/qr_example_background.png")
-          }
-          style={styles.qrContainer}
-          imageStyle={{ borderRadius: 5 }}
-        >
-          {isSelectable && (
-            <TouchableOpacity
-              style={styles.checkboxContainer}
-              onPress={() => onSelect && onSelect(data.id)}
-            >
-              <Icon
-               name={isSelected ? "check-circle" : "circle-o"}
-               size={15}
-               color={isSelected ? "#38B7FF" : "#aaa"}
-              />
-            </TouchableOpacity>
-          )}
-          <View style={styles.qrArea}>
-            {data.qrUrl ? (
-              <Image 
-                source={typeof data.qrUrl === 'string' ? { uri: data.qrUrl } : data.qrUrl}
-                style={styles.qrImage}
-                resizeMode="contain"
-              />
-            ) : (
-              <View style={styles.qrPlaceholder} />
+        {data.imageUri ? (
+          <ImageBackground
+            source={{ uri: String(data.imageUri) }}
+            style={styles.qrContainer}
+            imageStyle={{ borderRadius: 5 }}
+          >
+            {isSelectable && (
+              <TouchableOpacity
+                style={[
+                  styles.checkboxContainer,
+                  { backgroundColor: isSelected ? "#38B7FF" : "white" }
+                ]}
+                onPress={() => onSelect && onSelect(data.id)}
+              >
+                {isSelected && (
+                  <Icon
+                    name="check"
+                    size={10}
+                    color="white"
+                  />
+                )}
+              </TouchableOpacity>
             )}
-          </View>
-        </ImageBackground>
+            <View style={styles.qrArea}>
+              {data.qrUrl ? (
+                <Image
+                  source={typeof data.qrUrl === 'string' ? { uri: data.qrUrl } : data.qrUrl}
+                  style={styles.qrImage}
+                  resizeMode="contain"
+                />
+              ) : (
+                <View style={styles.qrPlaceholder} />
+              )}
+            </View>
+          </ImageBackground>
+        ) : (
+          <LinearGradient
+            colors={[data.backgroundColor, data.gradientColor]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.qrContainer}
+          >
+            {isSelectable && (
+              <TouchableOpacity
+                style={[
+                  styles.checkboxContainer,
+                  { backgroundColor: isSelected ? "#38B7FF" : "white" }
+                ]}
+                onPress={() => onSelect && onSelect(data.id)}
+              >
+                {isSelected && (
+                  <Icon
+                    name="check"
+                    size={10}
+                    color="white"
+                  />
+                )}
+              </TouchableOpacity>
+            )}
+            <View style={styles.qrArea}>
+              {data.qrUrl ? (
+                <Image
+                  source={typeof data.qrUrl === 'string' ? { uri: data.qrUrl } : data.qrUrl}
+                  style={styles.qrImage}
+                  resizeMode="contain"
+                />
+              ) : (
+                <View style={styles.qrPlaceholder} />
+              )}
+            </View>
+          </LinearGradient>
+        )}
         <Text style={styles.qrContent}>{data.phoneNumber}</Text>
       </View>
     </TouchableOpacity>
@@ -150,9 +190,7 @@ const styles = StyleSheet.create({
     right: 5,
     width: 15,
     height: 15,
-    backgroundColor: "white",
     borderRadius: 10,
-    borderWidth: 0,
     justifyContent: "center",
     alignItems: "center",
   },
