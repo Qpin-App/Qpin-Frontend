@@ -14,7 +14,7 @@ type RootStackParamList = {
   QrScreen: undefined;
   QrScreenDetail: QrData;
   QrScreenEditor: Partial<QrData>;
-  CompleteScreen: Partial<QrData>;  // CompleteScreen에 전달되는 데이터 타입 정의
+  CompleteScreen: undefined;
 };
 
 type NavigationProp = StackNavigationProp<RootStackParamList>;
@@ -104,7 +104,7 @@ const QrScreenEditor: React.FC = () => {
       } else {
         // 생성 모드: create API 호출
         await createQr(requestData);
-        navigation.navigate("QrScreen");
+        navigation.navigate("CompleteScreen");
       }
     } catch (error) {
       console.error(isUpdateMode ? "QR 수정 실패:" : "QR 생성 실패:", error);
