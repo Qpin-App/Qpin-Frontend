@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Image } from 'react-native';
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -13,6 +13,7 @@ import SearchScreen from "./src/screens/Search/SearchScreen";
 import InsuranceScreen from "./src/screens/Insurance/InsuranceScreen";
 import LoginScreen from "./src/screens/Login/LoginScreen";
 import CustomHeader from './src/components/CustomHeader';
+import DrawerMenu from './src/components/DrawerMenu';
 import GalleryScreen from "./src/screens/Search/GalleryScreen";
 import CameraScreen from "./src/screens/Search/CameraScreen";
 import ScrapScreen from "./src/screens/Scrap/ScrapScreen";
@@ -20,17 +21,39 @@ import ScrapScreen from "./src/screens/Scrap/ScrapScreen";
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
-const HomeStack = () => (
-    <Stack.Navigator>
-        <Stack.Screen
-           name="Home"
-           component={HomeScreen}
-            options={{
-                header: () => <CustomHeader title="" />,
-            }}
-        />
-    </Stack.Navigator>
-);
+const HomeStack = ({ navigation }: any) => {
+    const [drawerVisible, setDrawerVisible] = useState(false);
+
+    return (
+        <>
+            <Stack.Navigator>
+                <Stack.Screen
+                   name="Home"
+                   component={HomeScreen}
+                    options={{
+                        header: () => (
+                            <CustomHeader
+                                title=""
+                                onMenuPress={() => setDrawerVisible(true)}
+                            />
+                        ),
+                    }}
+                />
+            </Stack.Navigator>
+            <DrawerMenu
+                visible={drawerVisible}
+                onClose={() => setDrawerVisible(false)}
+                onNavigate={(screen) => {
+                    console.log('Navigate to:', screen);
+                    // TODO: 네비게이션 로직 구현
+                }}
+                onLogout={() => {
+                    navigation.navigate('Login');
+                }}
+            />
+        </>
+    );
+};
 
 const QrStack = () => (
   <Stack.Navigator
