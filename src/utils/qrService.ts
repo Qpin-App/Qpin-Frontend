@@ -18,45 +18,74 @@ const mapEnumToColor = (enumColor: string): string => {
 };
 
 export const fetchQrList = async (): Promise<QrData[]> => {
-  const http = getHttpClient();
-  // 실제 엔드포인트: /qr/selectList
-  const { data } = await http.get<ApiQrListResponse>(`${BASE}/selectList/1`); // TODO: 현재 1로 고정
-  const items = Array.isArray(data) ? data : [];
-  return items.map((item) => ({
-    id: item.qrId,
-    backgroundColor: mapEnumToColor(item.myColor), // Enum을 HEX로 변환
-    gradientColor: item.gradation,
-    sticker: item.sticker || null,
-    imageUri: item.background_picture || null,
-    phoneNumber: item.safePhoneNumber,
-    comment: item.memo ?? null,
-    qrUrl: item.qrImage ? `data:image/png;base64,${item.qrImage}` : undefined,
-  }));
+  try {
+    const http = getHttpClient();
+    // 실제 엔드포인트: /qr/selectList
+    const { data } = await http.get<ApiQrListResponse>(`${BASE}/selectList/1`); // FIXME: memberId=1 고정, 인증 구현 후 동적 ID로 변경 필요
+
+    // API 응답 검증
+    if (!Array.isArray(data)) {
+      console.warn('Invalid QR list response format:', data);
+      return [];
+    }
+
+    // null/undefined 아이템 필터링 및 매핑
+    return data
+      .filter(item => item && item.qrId) // 유효한 데이터만 처리
+      .map((item) => ({
+        id: item.qrId,
+        backgroundColor: mapEnumToColor(item.myColor), // Enum을 HEX로 변환
+        gradientColor: item.gradation || '#F8F8F8',
+        sticker: item.sticker || null,
+        imageUri: item.background_picture || null,
+        phoneNumber: item.safePhoneNumber || '',
+        comment: item.memo ?? null,
+        qrUrl: item.qrImage ? `data:image/png;base64,${item.qrImage}` : undefined,
+      }));
+  } catch (error) {
+    console.error('Failed to fetch QR list:', error);
+    throw error;
+  }
 };
 
 export const createQr = async (payload: QrCreateRequest): Promise<void> => {
-  const http = getHttpClient();
-  await http.post<string>(`${BASE}/create`, payload);
+  try {
+    const http = getHttpClient();
+    await http.post<string>(`${BASE}/create`, payload);
+  } catch (error) {
+    console.error('Failed to create QR:', error);
+    throw error;
+  }
 };
 
 export const updateQr = async (id: string | number, payload: QrCreateRequest): Promise<void> => {
-  const http = getHttpClient();
-  const numericId = typeof id === "number" ? id : Number(id);
+  try {
+    const http = getHttpClient();
+    const numericId = typeof id === "number" ? id : Number(id);
 
-  const modifyPayload = {
-    ...payload,
-    backGroundImage: payload.backgroundPicture,
-  };
+    const modifyPayload = {
+      ...payload,
+      backGroundImage: payload.backgroundPicture,
+    };
 
-  await http.put<string>(`${BASE}/modify/${numericId}`, modifyPayload);
+    await http.put<string>(`${BASE}/modify/${numericId}`, modifyPayload);
+  } catch (error) {
+    console.error('Failed to update QR:', error);
+    throw error;
+  }
 };
 
 export const deleteQrs = async (ids: Array<string | number>): Promise<void> => {
-  const http = getHttpClient();
-  const numericIds = ids
-    .map((v) => (typeof v === "number" ? v : Number(v)))
-    .filter((v) => Number.isFinite(v));
-  await http.delete(`${BASE}/remove`, { data: numericIds });
+  try {
+    const http = getHttpClient();
+    const numericIds = ids
+      .map((v) => (typeof v === "number" ? v : Number(v)))
+      .filter((v) => Number.isFinite(v));
+    await http.delete(`${BASE}/remove`, { data: numericIds });
+  } catch (error) {
+    console.error('Failed to delete QRs:', error);
+    throw error;
+  }
 };
 
 export default {

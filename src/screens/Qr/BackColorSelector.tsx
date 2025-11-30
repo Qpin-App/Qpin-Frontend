@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Image, FlatList } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import { LayoutChangeEvent } from "react-native";
@@ -24,13 +24,20 @@ const BackColorSelector = ({ currentColor, onSelectColor, onSelectGradient }: Ba
   const [selectedColor, setSelectedColor] = useState(currentColor);
   const [gradientWidth, setGradientWidth] = useState(0);
 
+  // currentColor props 변경 시 로컬 state 동기화
+  useEffect(() => {
+    if (currentColor) {
+      setSelectedColor(currentColor);
+    }
+  }, [currentColor]);
+
   const handleLayout = (e: LayoutChangeEvent) => {
     const { width } = e.nativeEvent.layout;
     setGradientWidth(width);
   };
 
   const handleGradientPress = (e: any) => {
-    if(selectedColor == INITIAL_COLOR) return;
+    if(selectedColor === INITIAL_COLOR) return;
 
     const { locationX } = e.nativeEvent;
 

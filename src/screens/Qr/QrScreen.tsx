@@ -31,7 +31,35 @@ const QrScreen = () => {
   };
 
   useEffect(() => {
-    loadQrs();
+    let isMounted = true;
+
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        setErrorMessage(null);
+        const items = await qrService.fetchQrList();
+        if (isMounted) {
+          console.log(items);
+          setQrItems(items);
+        }
+      } catch (err) {
+        if (isMounted) {
+          const e = toApiError(err);
+          console.log(err);
+          setErrorMessage(e.message);
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchData();
+
+    return () => {
+      isMounted = false; // cleanup: 컴포넌트 언마운트 시 setState 방지
+    };
   }, []);
 
   const toggleSelectionMode = () => {

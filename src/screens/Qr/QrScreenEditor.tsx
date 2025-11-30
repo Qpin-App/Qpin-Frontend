@@ -41,9 +41,9 @@ const mapStickerToEnum = (sticker: string | null): string | null => {
     "star": "STAR",
     "heart": "HEART",
     "cherry": "CHERRY",
-    "thumb": "THUMB",
+    "thumb_up": "THUMB",  // BackStickerSelector와 일치
     "car": "CAR",
-    "phone": "PHONE",
+    "calling": "PHONE",   // BackStickerSelector와 일치
   };
 
   return stickerMap[sticker.toLowerCase()] || sticker.toUpperCase();
@@ -87,8 +87,8 @@ const QrScreenEditor: React.FC = () => {
 
       // API 요청 데이터 준비 (백엔드 형식에 맞게)
       const requestData = {
-        memberId: 1, // TODO: 실제 memberId로 변경 필요
-        safePhoneNum: currentPhoneNumber, // TODO: 안심번호 선택 로직 필요
+        memberId: 1, // FIXME: 인증 시스템 구현 후 실제 사용자 ID로 변경 필요
+        safePhoneNum: currentPhoneNumber, // FIXME: 안심번호 선택 로직 구현 필요 (현재는 일반 번호와 동일)
         phoneNum: currentPhoneNumber,
         memo: currentComment || null,
         myColor: mapColorToEnum(selectedColor),

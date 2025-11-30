@@ -102,7 +102,7 @@ const QrDetailCardContent: React.FC<QrDetailCardContentProps> = ({
                       >
                         <Text style={styles.dropdownText}>
                           <Text style={styles.dropdownLabel}>
-                            {item.isSecureNmber ? "안심번호" : "내번호"}
+                            {item.isSecureNumber ? "안심번호" : "내번호"}
                           </Text>
                           {"   "}
                           {item.number}
