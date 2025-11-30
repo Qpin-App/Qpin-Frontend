@@ -6,7 +6,7 @@ export interface QrData {
   imageUri: string | null;
   phoneNumber: string;
   comment: string | null;
-  qrUrl?: any; // 백엔드에서 생성된 QR URL 또는 로컬 이미지
+  qrUrl?: string | number | { uri: string }; // 백엔드에서 생성된 QR URL 또는 로컬 이미지
 }
 
 export interface QrCreateRequest {
@@ -84,26 +84,26 @@ export const qrMockData: QrData[] = [
 ];
 
 
-export interface phoneNumber { 
+export interface phoneNumber {
   phoneNumberId: number,
-  isSecureNmber: boolean,
+  isSecureNumber: boolean,
   number: string,
 }
 
 export const phoneNumberMock: phoneNumber[] = [
-  { 
+  {
     phoneNumberId: 0,
-    isSecureNmber: false,
+    isSecureNumber: false,
     number: "010-4820-9952",
   },
-  { 
+  {
     phoneNumberId: 1,
-    isSecureNmber: true,
+    isSecureNumber: true,
     number: "098-765-4321",
   },
-  { 
+  {
     phoneNumberId: 2,
-    isSecureNmber: true,
+    isSecureNumber: true,
     number: "098-765-4321",
   }
 ]
