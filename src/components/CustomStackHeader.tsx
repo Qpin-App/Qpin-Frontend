@@ -6,10 +6,12 @@ const CustomHeader = ({
   title,
   onClick,
   isSave = false,
+  hideRightButton = false,
 }: {
   title: string;
-  onClick: () => void;
+  onClick?: () => void;
   isSave?: boolean;
+  hideRightButton?: boolean;
 }) => {
   const navigation = useNavigation();
 
@@ -24,16 +26,20 @@ const CustomHeader = ({
       <Text style={styles.title}>{title}</Text>
 
       {/* 조건에 따라 버튼 변경 */}
-      <TouchableOpacity onPress={onClick}>
-        {isSave ? (
-          <Text style={styles.saveButton}>저장</Text> // 저장 텍스트 버튼
-        ) : (
-          <Image
-            source={require("../assets/icons/trash_btn.png")}
-            style={styles.button} // 삭제 아이콘
-          />
-        )}
-      </TouchableOpacity>
+      {hideRightButton ? (
+        <View style={{ width: 13 }} />
+      ) : (
+        <TouchableOpacity onPress={onClick}>
+          {isSave ? (
+            <Text style={styles.saveButton}>저장</Text> // 저장 텍스트 버튼
+          ) : (
+            <Image
+              source={require("../assets/icons/trash_btn.png")}
+              style={styles.button} // 삭제 아이콘
+            />
+          )}
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
