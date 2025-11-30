@@ -41,9 +41,9 @@ const mapStickerToEnum = (sticker: string | null): string | null => {
     "star": "STAR",
     "heart": "HEART",
     "cherry": "CHERRY",
-    "thumb": "THUMB",
+    "thumb_up": "THUMB",  // BackStickerSelector와 일치
     "car": "CAR",
-    "phone": "PHONE",
+    "calling": "PHONE",   // BackStickerSelector와 일치
   };
 
   return stickerMap[sticker.toLowerCase()] || sticker.toUpperCase();
