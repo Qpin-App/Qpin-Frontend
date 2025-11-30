@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Image, FlatList, Modal, PermissionsAndroid, Platform } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, Image, FlatList, Modal, PermissionsAndroid, Platform, Alert } from "react-native";
 import { launchCamera, launchImageLibrary } from "react-native-image-picker";
 
 const STICKERS = ["star", "heart", "cherry", "thumb_up", "car", "calling"];
@@ -38,14 +38,19 @@ const BackStickerSelector = ({ onSelectSticker, onSelectImage }: BackStickerSele
   const handleTakePhoto = async () => {
     const hasPermission = await requestCameraPermission();
     if (!hasPermission) {
-      console.log("카메라 권한이 거부됨");
+      Alert.alert("권한 필요", "카메라 접근 권한이 필요합니다. 설정에서 권한을 허용해주세요.");
       return;
     }
 
     launchCamera(
       { mediaType: "photo", quality: 1, saveToPhotos: true },
       (response) => {
-        if (response.assets && response.assets.length > 0) {
+        if (response.didCancel) {
+          console.log('User cancelled camera');
+        } else if (response.errorCode) {
+          console.error('Camera error:', response.errorMessage);
+          Alert.alert("오류", response.errorMessage || "카메라 실행 중 오류가 발생했습니다.");
+        } else if (response.assets && response.assets.length > 0) {
           onSelectImage(response.assets[0].uri || "");
         }
         setModalVisible(false);
@@ -57,7 +62,12 @@ const BackStickerSelector = ({ onSelectSticker, onSelectImage }: BackStickerSele
     launchImageLibrary(
       { mediaType: "photo", quality: 1 },
       (response) => {
-        if (response.assets && response.assets.length > 0) {
+        if (response.didCancel) {
+          console.log('User cancelled image picker');
+        } else if (response.errorCode) {
+          console.error('Image picker error:', response.errorMessage);
+          Alert.alert("오류", response.errorMessage || "갤러리 접근 중 오류가 발생했습니다.");
+        } else if (response.assets && response.assets.length > 0) {
           onSelectImage(response.assets[0].uri || "");
         }
         setModalVisible(false);

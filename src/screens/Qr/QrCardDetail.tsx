@@ -77,20 +77,31 @@ const QrDetailCard: React.FC<QrDetailCardProps> = ({
 
   // 전화번호가 변경되면 QR 코드 생성
   useEffect(() => {
-    if (tempPhoneNumber && qrRef.current) {
-      setTimeout(() => {
-        qrRef.current.toDataURL((dataURL: string) => {
-          console.log('QR generated for:', tempPhoneNumber);
-          setGeneratedQrUrl(`data:image/png;base64,${dataURL}`);
-        });
-      }, 100);
-    }
+    if (!tempPhoneNumber || !qrRef.current) return;
 
-    // 부모 컴포넌트에 전화번호 변경 알림
+    const generateQR = async () => {
+      try {
+        await new Promise<void>((resolve) => {
+          qrRef.current?.toDataURL((dataURL: string) => {
+            console.log('QR generated for:', tempPhoneNumber);
+            setGeneratedQrUrl(`data:image/png;base64,${dataURL}`);
+            resolve();
+          });
+        });
+      } catch (error) {
+        console.error('QR generation failed:', error);
+      }
+    };
+
+    generateQR();
+  }, [tempPhoneNumber]);
+
+  // 부모 컴포넌트에 전화번호 변경 알림 (별도 useEffect)
+  useEffect(() => {
     if (onPhoneNumberChange && tempPhoneNumber) {
       onPhoneNumberChange(tempPhoneNumber);
     }
-  }, [tempPhoneNumber, onPhoneNumberChange]);
+  }, [tempPhoneNumber]);
 
   const handleCommentChange = (value: string) => {
     setTempComment(value);
