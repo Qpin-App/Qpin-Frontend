@@ -17,43 +17,27 @@ import DrawerMenu from './src/components/DrawerMenu';
 import GalleryScreen from "./src/screens/Search/GalleryScreen";
 import CameraScreen from "./src/screens/Search/CameraScreen";
 import ScrapScreen from "./src/screens/Scrap/ScrapScreen";
+import ProfileEditScreen from "./src/screens/Profile/ProfileEditScreen";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
-const HomeStack = ({ navigation }: any) => {
-    const [drawerVisible, setDrawerVisible] = useState(false);
-
-    return (
-        <>
-            <Stack.Navigator>
-                <Stack.Screen
-                   name="Home"
-                   component={HomeScreen}
-                    options={{
-                        header: () => (
-                            <CustomHeader
-                                title=""
-                                onMenuPress={() => setDrawerVisible(true)}
-                            />
-                        ),
-                    }}
-                />
-            </Stack.Navigator>
-            <DrawerMenu
-                visible={drawerVisible}
-                onClose={() => setDrawerVisible(false)}
-                onNavigate={(screen) => {
-                    console.log('Navigate to:', screen);
-                    // TODO: 네비게이션 로직 구현
-                }}
-                onLogout={() => {
-                    navigation.navigate('Login');
-                }}
-            />
-        </>
-    );
-};
+const HomeStack = ({ onMenuPress }: { onMenuPress: () => void }) => (
+    <Stack.Navigator>
+        <Stack.Screen
+           name="HomeMain"
+           component={HomeScreen}
+            options={{
+                header: () => (
+                    <CustomHeader
+                        title=""
+                        onMenuPress={onMenuPress}
+                    />
+                ),
+            }}
+        />
+    </Stack.Navigator>
+);
 
 const QrStack = () => (
   <Stack.Navigator
@@ -142,121 +126,138 @@ const ParkingStack = () => (
 )
 
 // 메인 탭 네비게이터
-const MainTabNavigator = () => (
-  <Tab.Navigator
-    screenOptions={{
-      headerShown: false,
-      tabBarStyle: {
-        height: 100,
-      },
-      tabBarItemStyle: {
-        alignItems: 'center',
-        flexDirection: 'row',
-      },
-    }}
-  >
-    <Tab.Screen
-      name="Home"
-      component={HomeStack}
-      options={{
-        tabBarIcon: ({ focused, color, size }) => (
-          <Image
-            source={
-              focused
-              ? require("./src/assets/icons/on_home.png")
-              : require("./src/assets/icons/off_home.png")
-            }
-          />
-        ),
-        tabBarLabel: '홈',
-        tabBarLabelStyle: {
-          fontSize: 12,
-          marginTop: 10,
-        },
-      }}
-    />
-    <Tab.Screen
-      name="Qr"
-      component={QrStack}
-      options={{
-        tabBarIcon: ({ focused, color, size }) => (
-          <Image
-            source={
-              focused
-              ? require("./src/assets/icons/on_qr.png")
-              : require("./src/assets/icons/off_qr.png")
-            }
-          />
-        ),
-        tabBarLabel: 'QR생성',
-        tabBarLabelStyle: {
-          fontSize: 12,
-          marginTop: 10,
-        },
-      }}
-    />
-    <Tab.Screen
-      name="Parking"
-      component={ParkingStack}
-      options={{
-        tabBarIcon: ({ focused, color, size }) => (
-          <Image
-            source={
-              focused
-              ? require("./src/assets/icons/on_parking.png")
-              : require("./src/assets/icons/off_parking.png")
-            }
-          />
-        ),
-        tabBarLabel: '간편주차',
-        tabBarLabelStyle: {
-          fontSize: 12,
-          marginTop: 10,
-        },
-      }}
-    />
-    <Tab.Screen
-      name="Search"
-      component={SearchStack}
-      options={{
-        tabBarIcon: ({ focused, color, size }) => (
-          <Image
-            source={
-              focused
-              ? require("./src/assets/icons/on_search.png")
-              : require("./src/assets/icons/off_search.png")
-            }
-          />
-        ),
-        tabBarLabel: '차량찾기',
-        tabBarLabelStyle: {
-          fontSize: 12,
-          marginTop: 10,
-        },
-      }}
-    />
-    <Tab.Screen
-      name="Insurance"
-      component={InsuranceScreen}
-      options={{
-        tabBarIcon: ({ focused, color, size }) => (
-          <Image
-            source={
-              focused
-              ? require("./src/assets/icons/on_insurance.png")
-              : require("./src/assets/icons/off_insurance.png")
-            }
-          />
-        ),
-        tabBarLabel: '내보험',
-        tabBarLabelStyle: {
-          fontSize: 12,
-          marginTop: 10,
-        },
-      }}
-    />
-  </Tab.Navigator>
-);
+const MainTabNavigator = ({ navigation }: any) => {
+  const [drawerVisible, setDrawerVisible] = useState(false);
+
+  return (
+    <>
+      <Tab.Navigator
+        screenOptions={{
+          headerShown: false,
+          tabBarStyle: {
+            height: 100,
+          },
+          tabBarItemStyle: {
+            alignItems: 'center',
+            flexDirection: 'row',
+          },
+        }}
+      >
+        <Tab.Screen
+          name="Home"
+          options={{
+            tabBarIcon: ({ focused, color, size }) => (
+              <Image
+                source={
+                  focused
+                  ? require("./src/assets/icons/on_home.png")
+                  : require("./src/assets/icons/off_home.png")
+                }
+              />
+            ),
+            tabBarLabel: '홈',
+            tabBarLabelStyle: {
+              fontSize: 12,
+              marginTop: 10,
+            },
+          }}
+        >
+          {() => <HomeStack onMenuPress={() => setDrawerVisible(true)} />}
+        </Tab.Screen>
+        <Tab.Screen
+          name="Qr"
+          component={QrStack}
+          options={{
+            tabBarIcon: ({ focused, color, size }) => (
+              <Image
+                source={
+                  focused
+                  ? require("./src/assets/icons/on_qr.png")
+                  : require("./src/assets/icons/off_qr.png")
+                }
+              />
+            ),
+            tabBarLabel: 'QR생성',
+            tabBarLabelStyle: {
+              fontSize: 12,
+              marginTop: 10,
+            },
+          }}
+        />
+        <Tab.Screen
+          name="Parking"
+          component={ParkingStack}
+          options={{
+            tabBarIcon: ({ focused, color, size }) => (
+              <Image
+                source={
+                  focused
+                  ? require("./src/assets/icons/on_parking.png")
+                  : require("./src/assets/icons/off_parking.png")
+                }
+              />
+            ),
+            tabBarLabel: '간편주차',
+            tabBarLabelStyle: {
+              fontSize: 12,
+              marginTop: 10,
+            },
+          }}
+        />
+        <Tab.Screen
+          name="Search"
+          component={SearchStack}
+          options={{
+            tabBarIcon: ({ focused, color, size }) => (
+              <Image
+                source={
+                  focused
+                  ? require("./src/assets/icons/on_search.png")
+                  : require("./src/assets/icons/off_search.png")
+                }
+              />
+            ),
+            tabBarLabel: '차량찾기',
+            tabBarLabelStyle: {
+              fontSize: 12,
+              marginTop: 10,
+            },
+          }}
+        />
+        <Tab.Screen
+          name="Insurance"
+          component={InsuranceScreen}
+          options={{
+            tabBarIcon: ({ focused, color, size }) => (
+              <Image
+                source={
+                  focused
+                  ? require("./src/assets/icons/on_insurance.png")
+                  : require("./src/assets/icons/off_insurance.png")
+                }
+              />
+            ),
+            tabBarLabel: '내보험',
+            tabBarLabelStyle: {
+              fontSize: 12,
+              marginTop: 10,
+            },
+          }}
+        />
+      </Tab.Navigator>
+      <DrawerMenu
+        visible={drawerVisible}
+        onClose={() => setDrawerVisible(false)}
+        onNavigate={(screen) => {
+          navigation.navigate(screen);
+        }}
+        onLogout={() => {
+          navigation.navigate('Login');
+        }}
+      />
+    </>
+  );
+};
 
 export default function App() {
   return (
@@ -264,6 +265,14 @@ export default function App() {
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Main" component={MainTabNavigator} />
+        <Stack.Screen
+          name="ProfileEdit"
+          component={ProfileEditScreen}
+          options={{
+            presentation: 'modal',
+            headerShown: false
+          }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
