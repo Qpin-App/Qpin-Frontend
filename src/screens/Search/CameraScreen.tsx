@@ -86,7 +86,7 @@ export default function CameraScreen() {
       Alert.alert(
         '사진 촬영',
         '사진이 저장되었습니다.',
-        [{ text: 'OK', onPress: () => navigation.navigate('SearchScreen') }]
+        [{ text: 'OK', onPress: () => navigation.navigate('GalleryScreen') }]
       );
     } catch (error) {
       console.error(error);
@@ -112,7 +112,11 @@ export default function CameraScreen() {
   
             await uploadPhotoPath(savedPath);
   
-            Alert.alert('녹화 완료', '영상이 저장되었습니다.');
+            Alert.alert(
+              '녹화 완료',
+              '영상이 저장되었습니다.',
+              [{ text: 'OK', onPress: () => navigation.navigate('GalleryScreen') }]
+            );            
           } catch (e) {
             Alert.alert('오류', '영상 저장 실패');
           } finally {
