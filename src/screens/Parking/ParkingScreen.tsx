@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { View, TextInput, Text, TouchableOpacity, StyleSheet, Dimensions, Alert, Image } from "react-native";
 import { WebView } from "react-native-webview";
 import { useNavigation } from '@react-navigation/native';
@@ -39,13 +39,33 @@ const dummyData: ParkingInfo = {
   image: "https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyNDExMDVfNzkg%2FMDAxNzMwNzUzMTgxMzM5.U7c0LhEIbAJ8Ni5_SO-E195mfc_7Gy5r_2xDdzPl7Jog.3gLU1JyRYN-HwBZJ9L5dH2FB4ncPFT4lTYPr87S2FMsg.JPEG%2Fchild%25A3%25DFimg01%25A3%25DF20241105053220.jpg&type=l340_165",
 };
 
+interface ParkingItem {
+  parkingId: number;
+  name: string;
+  lat: number;
+  lng: number;
+}
+
+interface ParkingDetail {
+  parkingId: number;
+  name: string;
+  address: string;
+  price: number;
+}
+
+const MEMBER_ID = 0;
+
 export default function ParkingScreen() {
-  const [showSearch, setShowSearch] = useState(true);
+  const webViewRef = useRef<WebView>(null);
+  const navigation = useNavigation<NavigationProp>();
+
   const [searchValue, setSearchValue] = useState("");
   const [bottomSheetOpen, setBottomSheetOpen] = useState(false);
 
-  const navigation = useNavigation<NavigationProp>();
-  const webViewRef = useRef<WebView>(null);
+  const [parkingDetail, setParkingDetail] =
+    useState<ParkingDetail | null>(null);
+  const [selectedParkingId, setSelectedParkingId] =
+    useState<number | null>(null);
 
   // ✅ 구글맵 HTML
   const googleMapHTML = `
@@ -126,38 +146,60 @@ export default function ParkingScreen() {
     </html>
   `;
 
-  type WebViewMessageEvent = {
-    nativeEvent: {
-      data: string;
-    };
+  const fetchParkingDetail = async (parkingId: number) => {
+    try {
+      const res = await fetch(
+        `http://43.202.105.137:8080/parking/select?parkingId=${parkingId}`
+      );
+      const data: ParkingDetail = await res.json();
+      setParkingDetail(data);
+      setSelectedParkingId(parkingId);
+      setBottomSheetOpen(true);
+    } catch (e) {
+      console.error("주차장 상세 조회 실패", e);
+    }
+  };
+  
+  const startParking = async () => {
+    if (!selectedParkingId) return;
+
+    await fetch("http://43.202.105.137:8080/parking", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        memberId: MEMBER_ID,
+        parkingId: selectedParkingId,
+      }),
+    });
+
+    Alert.alert("주차 시작", "주차가 시작되었습니다.");
+  };
+  
+  const endParking = async () => {
+    if (!selectedParkingId) return;
+
+    await fetch("http://43.202.105.137:8080/parking", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        memberId: MEMBER_ID,
+        parkingId: selectedParkingId,
+      }),
+    });
+
+    Alert.alert("주차 종료", "주차가 종료되었습니다.");
+    setBottomSheetOpen(false);
+    setParkingDetail(null);
+    setSelectedParkingId(null);
   };
 
-  const handleWebViewMessage = (event: WebViewMessageEvent) => {
-    try {
-      const data = JSON.parse(event.nativeEvent.data);
-      console.log('WebView에서 받은 데이터:', data);
-  
-      switch (data.type) {
-        case 'MAP_CLICK':
-          console.log(`지도 클릭: ${data.lat}, ${data.lng}`);
-          // 지도 클릭 시 하단 시트 닫기
-          if (bottomSheetOpen) {
-            setBottomSheetOpen(false);
-          }
-          break;
-  
-        case 'MARKER_CLICK':
-          setBottomSheetOpen(true); // 하단 시트 열기
-          break;
-  
-        case 'LOCATION_FOUND':
-          Alert.alert('현재 위치', `위도: ${data.lat}\n경도: ${data.lng}`);
-          break;
-      }
-    } catch (error) {
-      console.error('WebView 메시지 파싱 오류:', error);
+  const handleWebViewMessage = (event: any) => {
+    const message = JSON.parse(event.nativeEvent.data);
+
+    if (message.type === "MARKER_CLICK") {
+      fetchParkingDetail(message.parkingId);
     }
-  };  
+  }; 
 
   const handleWebViewError = () => {
     console.error("WebView error 발생");
@@ -170,8 +212,7 @@ export default function ParkingScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.rootContainer}>
-        {showSearch && (
-          <View style={styles.searchContainer}>
+        {<View style={styles.searchContainer}>
             <TextInput
               style={styles.searchInput}
               value={searchValue}
@@ -179,7 +220,7 @@ export default function ParkingScreen() {
               placeholder="🔍 목적지를 검색하세요"
             />
           </View>
-        )}
+        }
         <TouchableOpacity
           style={styles.scrapButton}
           onPress={() => navigation.navigate('ScrapScreen')}
