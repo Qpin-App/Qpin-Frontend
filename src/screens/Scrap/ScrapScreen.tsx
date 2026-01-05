@@ -1,20 +1,46 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, FlatList, StyleSheet } from 'react-native';
 import ScrapCardItem from './ScrapCardItem';
 import ScrapStackHeader from '../../components/ScrapStackHeader';
 
-const initialData = [
-  { id: '1', name: '강남역 공영주차장', distance: '100m', image: 'https://via.placeholder.com/150', isDone: false },
-  { id: '2', name: '역삼동 제1주차장', distance: '150m', image: 'https://via.placeholder.com/150', isDone: true },
-  { id: '3', name: '삼성동 공영주차장', distance: '200m', image: 'https://via.placeholder.com/150', isDone: false },
-  { id: '4', name: '논현동 제2주차장', distance: '300m', image: 'https://via.placeholder.com/150', isDone: true },
-  { id: '5', name: '청담동 공영주차장', distance: '350m', image: 'https://via.placeholder.com/150', isDone: false },
-  { id: '6', name: '압구정 주차장', distance: '400m', image: 'https://via.placeholder.com/150', isDone: true },
-];
+interface ScrapItem {
+  id: string;
+  name: string;
+  distance: string;
+  image: string;
+  isDone: boolean;
+}
+
+const MEMBER_ID = 0;
 
 const ScrapScreen = () => {
+  const [scrapData, setScrapData] = useState<ScrapItem[]>([]);
   const [deleteMode, setDeleteMode] = useState(false);
   const [selectedItems, setSelectedItems] = useState<Record<string, boolean>>({});
+
+  /* 스크랩 조회 */
+  const fetchScraps = async () => {
+    try {
+      const res = await fetch(
+        `http://43.202.105.137:8080/scrap/${MEMBER_ID}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      const data = await res.json();
+      setScrapData(data);
+    } catch (e) {
+      console.error('스크랩 조회 실패', e);
+    }
+  };
+
+  useEffect(() => {
+    fetchScraps();
+  }, []);
 
   const toggleSelectItem = (id: string) => {
     setSelectedItems(prev => ({
@@ -33,9 +59,29 @@ const ScrapScreen = () => {
     setSelectedItems({});
   };
 
-  const handleDelete = () => {
-    console.log('삭제할 아이템:', Object.keys(selectedItems).filter(id => selectedItems[id]));
-    cancelDeleteMode();
+  /* 스크랩 삭제 */
+  const handleDelete = async () => {
+    const deleteTargets = Object.keys(selectedItems).filter(
+      id => selectedItems[id]
+    );
+
+    try {
+      await Promise.all(
+        deleteTargets.map(scrapId =>
+          fetch(`http://43.202.105.137:8080/scrap/${scrapId}`, {
+            method: 'DELETE',
+          })
+        )
+      );
+
+      setScrapData(prev =>
+        prev.filter(item => !deleteTargets.includes(item.id))
+      );
+    } catch (e) {
+      console.error('스크랩 삭제 실패', e);
+    } finally {
+      cancelDeleteMode();
+    }
   };
 
   return (
@@ -50,7 +96,7 @@ const ScrapScreen = () => {
       />
 
       <FlatList
-        data={initialData}
+        data={scrapData}
         keyExtractor={item => item.id}
         numColumns={3}
         columnWrapperStyle={{ justifyContent: 'space-between' }}

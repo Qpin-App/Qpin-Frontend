@@ -10,6 +10,7 @@ import { Camera, useCameraDevice, useCameraPermission } from 'react-native-visio
 import { useFocusEffect } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { CameraRoll } from '@react-native-camera-roll/camera-roll';
 
 export type SearchStackParamList = {
   SearchScreen: undefined;
@@ -21,6 +22,22 @@ type CameraScreenNavigationProp = NativeStackNavigationProp<
   SearchStackParamList,
   "CameraScreen"
 >;
+
+const uploadPhotoPath = async (localPath: string) => {
+  try {
+    await fetch('http://43.202.105.137:8080/photo', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        userId: 0,
+        parkingAreaId: 0,
+        carPhotoUrl: localPath,
+      }),
+    });
+  } catch (e) {
+    console.error('백엔드 전송 실패', e);
+  }
+};
 
 export default function CameraScreen() {
   const camera = useRef<Camera>(null);
@@ -53,59 +70,76 @@ export default function CameraScreen() {
   const takePhoto = async () => {
     try {
       const cam = camera.current;
-      if (cam) {
-        const photo = await cam.takePhoto({ flash });
-        console.log('Photo path:', photo.path);
-        Alert.alert('사진 촬영', '사진이 촬영되었습니다!',
-          [
-            {
-              text: 'OK',
-              onPress: () => navigation.navigate("SearchScreen"),
-            },
-          ]
-        ,);
-      }
+      if (!cam) return;
+  
+      const photo = await cam.takePhoto({ flash });
+  
+      // 1. 실제로 기기 갤러리에 저장
+      const savedPath = await CameraRoll.save(
+        `file://${photo.path}`,
+        { type: 'photo' }
+      );
+  
+      // 2. 저장된 경로를 백엔드로 전송
+      await uploadPhotoPath(savedPath);
+  
+      Alert.alert(
+        '사진 촬영',
+        '사진이 저장되었습니다.',
+        [{ text: 'OK', onPress: () => navigation.navigate('GalleryScreen') }]
+      );
     } catch (error) {
       console.error(error);
-      Alert.alert('오류', '사진 촬영에 실패했습니다.');
+      Alert.alert('오류', '사진 저장에 실패했습니다.');
     }
-  };
+  };   
 
   const startRecording = async () => {
+    const cam = camera.current;
+    if (!cam || isRecording) return;
+  
     try {
-      const cam = camera.current;
-      if (cam && !isRecording) {
-        await cam.startRecording({
-          flash,
-          onRecordingFinished: (video) => {
-            console.log('Video path:', video.path);
+      setIsRecording(true);
+  
+      await cam.startRecording({
+        flash,
+        onRecordingFinished: async (video) => {
+          try {
+            const savedPath = await CameraRoll.save(
+              `file://${video.path}`,
+              { type: 'video' }
+            );
+  
+            await uploadPhotoPath(savedPath);
+  
+            Alert.alert(
+              '녹화 완료',
+              '영상이 저장되었습니다.',
+              [{ text: 'OK', onPress: () => navigation.navigate('GalleryScreen') }]
+            );            
+          } catch (e) {
+            Alert.alert('오류', '영상 저장 실패');
+          } finally {
             setIsRecording(false);
-            Alert.alert('녹화 완료', '비디오가 저장되었습니다!');
-          },
-          onRecordingError: (err) => {
-            console.error(err);
-            setIsRecording(false);
-            Alert.alert('오류', '녹화 중 오류 발생');
-          },
-        });
-        setIsRecording(true);
-      }
-    } catch (error) {
-      console.error(error);
+          }
+        },
+        onRecordingError: () => {
+          setIsRecording(false);
+          Alert.alert('오류', '녹화 중 오류 발생');
+        },
+      });
+    } catch (e) {
+      setIsRecording(false);
       Alert.alert('오류', '녹화 시작 실패');
     }
-  };
+  };   
 
   const stopRecording = async () => {
-    try {
-      const cam = camera.current;
-      if (cam && isRecording) {
-        await cam.stopRecording();
-      }
-    } catch (error) {
-      console.error(error);
+    const cam = camera.current;
+    if (cam && isRecording) {
+      await cam.stopRecording();
     }
-  };
+  };  
 
   const toggleFlash = () => setFlash((f) => (f === 'off' ? 'on' : 'off'));
   const getFlashIcon = () => (flash === 'on' ? '⚡' : '⚡̶');
@@ -154,6 +188,7 @@ export default function CameraScreen() {
           style={[styles.captureButton, isRecording && styles.recordingButton]}
           onPress={isRecording ? stopRecording : takePhoto}
           onLongPress={startRecording}
+          delayLongPress={300}
         >
           <View style={styles.captureButtonInner} />
         </TouchableOpacity>
