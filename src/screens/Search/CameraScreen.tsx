@@ -22,6 +22,24 @@ type CameraScreenNavigationProp = NativeStackNavigationProp<
   "CameraScreen"
 >;
 
+const uploadPhotoPath = async (localPath: string) => {
+  try {
+    await fetch('http://43.202.105.137:8080/photo', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userId: 0,
+        parkingAreaId: 0,
+        carPhotoUrl: localPath,
+      }),
+    });
+  } catch (e) {
+    console.error('사진 정보 전송 실패', e);
+  }
+};
+
 export default function CameraScreen() {
   const camera = useRef<Camera>(null);
   const navigation = useNavigation<CameraScreenNavigationProp>();
@@ -55,21 +73,28 @@ export default function CameraScreen() {
       const cam = camera.current;
       if (cam) {
         const photo = await cam.takePhoto({ flash });
-        console.log('Photo path:', photo.path);
-        Alert.alert('사진 촬영', '사진이 촬영되었습니다!',
+  
+        const localPath = `file://${photo.path}`;
+        console.log('Photo path:', localPath);
+  
+        await uploadPhotoPath(localPath);
+  
+        Alert.alert(
+          '사진 촬영',
+          '사진이 촬영되었습니다!',
           [
             {
               text: 'OK',
               onPress: () => navigation.navigate("SearchScreen"),
             },
           ]
-        ,);
+        );
       }
     } catch (error) {
       console.error(error);
       Alert.alert('오류', '사진 촬영에 실패했습니다.');
     }
-  };
+  };  
 
   const startRecording = async () => {
     try {
@@ -77,8 +102,12 @@ export default function CameraScreen() {
       if (cam && !isRecording) {
         await cam.startRecording({
           flash,
-          onRecordingFinished: (video) => {
-            console.log('Video path:', video.path);
+          onRecordingFinished: async (video) => {
+            const localPath = `file://${video.path}`;
+            console.log('Video path:', localPath);
+  
+            await uploadPhotoPath(localPath);
+  
             setIsRecording(false);
             Alert.alert('녹화 완료', '비디오가 저장되었습니다!');
           },
@@ -94,7 +123,7 @@ export default function CameraScreen() {
       console.error(error);
       Alert.alert('오류', '녹화 시작 실패');
     }
-  };
+  };  
 
   const stopRecording = async () => {
     try {
