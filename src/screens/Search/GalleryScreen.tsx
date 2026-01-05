@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
 import CommonModal from '../../components/CommonModal';
 import SearchStackHeader from "../../components/SearchStackHeader";
@@ -35,10 +35,32 @@ const handleSave = () => {
   return null;
 };
 
+interface Photo {
+  id: string;
+  image: string;
+  name: string;
+  date: string;
+}
+
 const GalleryScreen = () => {
+  const [galleryData, setGalleryData] = useState<Photo[]>([]);
   const [selected, setSelected] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
+
+  useEffect(() => {
+    fetchGallery();
+  }, []);
+
+  const fetchGallery = async () => {
+    try {
+      const res = await fetch('http://43.202.105.137:8080/photo');
+      const data = await res.json();
+      setGalleryData(data);
+    } catch (e) {
+      console.error('갤러리 조회 실패', e);
+    }
+  };
 
   const toggleSelectItem = (id: string) => {
     if (selectedItems.includes(id)) {
@@ -48,10 +70,27 @@ const GalleryScreen = () => {
     }
   };
 
-  const handleDelete = () => {
-    setShowModal(false);
-    setSelectedItems([]);
-    setSelected(false);
+  const handleDelete = async () => {
+    try {
+      await Promise.all(
+        selectedItems.map(id =>
+          fetch(`http://43.202.105.137:8080/photo/${id}`, {
+            method: 'DELETE',
+          })
+        )
+      );
+
+      setGalleryData(prev =>
+        prev.filter(item => !selectedItems.includes(item.id))
+      );
+
+    } catch (e) {
+      console.error('삭제 실패', e);
+    } finally {
+      setShowModal(false);
+      setSelectedItems([]);
+      setSelected(false);
+    }
   };
 
   return (

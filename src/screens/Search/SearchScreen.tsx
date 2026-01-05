@@ -29,7 +29,7 @@ type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'SearchScree
 const SearchScreen = () => {
   const navigation = useNavigation<NavigationProp>();
 
-  // 카카오맵 HTML (JavaScript API 사용)
+// 카카오맵 HTML (JavaScript API 사용)
 //   const kakaoMapHTML = `
 //     <!DOCTYPE html>
 //     <html>
